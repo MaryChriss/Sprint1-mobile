@@ -1,14 +1,30 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
-import { ImageBackground, Text, View, StyleSheet, Button, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { ImageBackground, Text, View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { TextInput } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Login() {
-  const [text, setText] = React.useState("");
-const navigation = useNavigation<any>();
-  const [name, setName] = React.useState('');
-const [email, setEmail] = React.useState('');
-const [password, setPassword] = React.useState('');
+export default function Register() {
+  const navigation = useNavigation<any>();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleRegister = async () => {
+    if (!name || !email || !password) {
+      Alert.alert("Erro", "Preencha todos os campos.");
+      return;
+    }
+
+    const userData = { name, email, password };
+    await AsyncStorage.setItem('userData', JSON.stringify(userData));
+
+    Alert.alert("Sucesso", "Cadastro realizado!");
+    setName('');
+    setEmail('');
+    setPassword('');
+    navigation.navigate('Login');
+  };
 
   return (
     <ImageBackground
@@ -22,58 +38,28 @@ const [password, setPassword] = React.useState('');
             Bem-vindo ao{"\n"}
             <Text style={styles.titleHighlight}>Future Stack</Text>
           </Text>
-
           <Text style={styles.subtitle}>
             seu aplicativo para localizar {"\n"}sua moto com agilidade
           </Text>
         </View>
 
-<View style={styles.containereverything}>
-     <View style={styles.loginContainer}>
-          <Text style={styles.loginLabel}>Cadastre-se:</Text>
+        <View style={styles.containereverything}>
+          <View style={styles.loginContainer}>
+            <Text style={styles.loginLabel}>Cadastre-se:</Text>
 
-          <TextInput
-  label="Nome"
-  value={name}
-  onChangeText={text => setName(text)}
-  style={styles.input}
-/>
+            <TextInput label="Nome" value={name} onChangeText={setName} style={styles.input} />
+            <TextInput label="Email" value={email} onChangeText={setEmail} style={styles.input} />
+            <TextInput label="Senha" secureTextEntry value={password} onChangeText={setPassword} style={styles.input} />
+          </View>
 
-<TextInput
-  label="Email"
-  value={email}
-  onChangeText={text => setEmail(text)}
-  style={styles.input}
-/>
+          <TouchableOpacity style={styles.button} onPress={handleRegister}>
+            <Text style={styles.buttonText}>Cadastre-se</Text>
+          </TouchableOpacity>
 
-<TextInput
-  label="Senha"
-  secureTextEntry
-  value={password}
-  onChangeText={text => setPassword(text)}
-  style={styles.input}
-/>
-
+          <Text style={styles.buttonText} onPress={() => navigation.navigate('Login')}>
+            Já tem cadastro? Faça login
+          </Text>
         </View>
-
-        <View>
-            <TouchableOpacity
-  style={styles.button}
-  onPress={() => {
-    console.log('Cadastro realizado:', { name, email, password });
-    setName('');
-    setEmail('');
-    setPassword('');
-  }}
->
-  <Text style={styles.buttonText}>Cadastre-se</Text>
-</TouchableOpacity>
-
-
-            <Text style={styles.buttonText} onPress={() => navigation.navigate('Login')}>Já tem cadastro? Faça login</Text>
-        </View>
-</View>
-
       </View>
     </ImageBackground>
   );

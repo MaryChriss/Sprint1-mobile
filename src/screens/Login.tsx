@@ -1,29 +1,39 @@
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
-import { ImageBackground, Text, View, StyleSheet, Button, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ImageBackground, Text, View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect } from 'react';
 
 export default function Login() {
-  const [text, setText] = React.useState("");
-const navigation = useNavigation<any>();
+  const navigation = useNavigation<any>();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-useEffect(() => {
-  // Quando a tela carregar, buscamos o email salvo anteriormente
-  const loadEmail = async () => {
-    const savedEmail = await AsyncStorage.getItem('userEmail');
-    if (savedEmail) {
-      setText(savedEmail); // mostra o email salvo no campo
+  useEffect(() => {
+    const loadSavedData = async () => {
+      const data = await AsyncStorage.getItem('userData');
+      if (data) {
+        const user = JSON.parse(data);
+        setEmail(user.email);
+        setPassword(user.password); // pré-preenche para facilitar teste
+      }
+    };
+    loadSavedData();
+  }, []);
+
+  const handleLogin = async () => {
+    const data = await AsyncStorage.getItem('userData');
+    if (data) {
+      const user = JSON.parse(data);
+      if (user.email === email && user.password === password) {
+        navigation.navigate('Home');
+      } else {
+        Alert.alert("Erro", "Email ou senha incorretos.");
+      }
+    } else {
+      Alert.alert("Erro", "Nenhum usuário cadastrado.");
     }
   };
-  loadEmail();
-}, []);
-
-const handleLogin = async () => {
-  await AsyncStorage.setItem('userEmail', text); // salva o email
-  navigation.navigate('Home'); // navega após login
-};
 
   return (
     <ImageBackground
@@ -37,45 +47,31 @@ const handleLogin = async () => {
             Bem-vindo ao{"\n"}
             <Text style={styles.titleHighlight}>Future Stack</Text>
           </Text>
-
           <Text style={styles.subtitle}>
             seu aplicativo para localizar {"\n"}sua moto com agilidade
           </Text>
         </View>
 
-<View style={styles.containereverything}>
-     <View style={styles.loginContainer}>
-          <Text style={styles.loginLabel}>Login:</Text>
+        <View style={styles.containereverything}>
+          <View style={styles.loginContainer}>
+            <Text style={styles.loginLabel}>Login:</Text>
+            <TextInput label="Email" mode="outlined" value={email} onChangeText={setEmail} style={styles.input} />
+            <TextInput label="Senha" secureTextEntry value={password} onChangeText={setPassword} style={styles.input} />
+          </View>
 
-          <TextInput
-            label="Email"
-            mode="outlined"
-            value={text}
-            onChangeText={text => setText(text)}
-            style={styles.input}
-          />
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Entrar</Text>
+          </TouchableOpacity>
 
-          <TextInput
-            label="Senha"
-            secureTextEntry
-            style={styles.input}
-          />
+          <Text style={styles.buttonText} onPress={() => navigation.navigate('Register')}>
+            Não tem cadastro? Cadastre-se
+          </Text>
         </View>
-
-        <View>
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-  <Text style={styles.buttonText}>Entrar</Text>
-</TouchableOpacity>
-
-
-            <Text style={styles.buttonText} onPress={() => navigation.navigate('Register')}>Não tem cadastro? Cadastre-se</Text>
-        </View>
-</View>
-
       </View>
     </ImageBackground>
   );
 }
+
 
 const styles = StyleSheet.create({
   background: {
