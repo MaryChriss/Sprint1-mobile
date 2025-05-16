@@ -1,9 +1,12 @@
 
-import {Image, StyleSheet, Text, View } from "react-native";
+import {Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { useNavigation } from "@react-navigation/native";
 
 export default function Header() {
+    const navigation = useNavigation<any>();
+    
     return (
         <View style={styles.container}>
             <View style={styles.name}>
@@ -13,7 +16,9 @@ export default function Header() {
             </View>
 
             <View>
-                <MaterialIcons name="logout" size={24} color="#1ead27" />
+                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                    <MaterialIcons name="logout" size={24} color="#1ead27" />
+                </TouchableOpacity>
             </View>
         </View>
     );

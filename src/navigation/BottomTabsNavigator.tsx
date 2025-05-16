@@ -1,21 +1,23 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { Ionicons } from "@expo/vector-icons";
-import Home from "../screens/Home";
-import Configuration from "../screens/Configuration";
-
+import Entypo from '@expo/vector-icons/Entypo';
+import HomeStackNavigator from './HomeStackNavigator';
+import Configuration from '../screens/Configuration';
+import Search from '../screens/Search';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabsNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ color, size }) => {
           if (route.name === "Home") {
-            const iconName = focused ? "home-sharp" : "home-outline";
-            return <Ionicons name={iconName} size={size} color={color} />;
+            return <Entypo name="home" size={size} color={color} />;
           } else if (route.name === "Configuration") {
             return <FontAwesome5 name="cog" size={size} color={color} />;
+          } else if (route.name === "Search") {
+            return <FontAwesome6 name="magnifying-glass" size={size} color={color} />;
           }
         },
         tabBarActiveTintColor: "#2E9936",
@@ -25,10 +27,14 @@ export default function BottomTabsNavigator() {
           borderTopWidth: 0,
           height: 80,
         },
+        headerShown: false,
       })}
     >
-      <Tab.Screen name="Home" component={Home} options={{ headerShown: false }} />
-      <Tab.Screen name="Configuration" component={Configuration} options={{ headerShown: false }} />
+      <Tab.Screen name="Home" component={HomeStackNavigator} />
+      <Tab.Screen name="Configuration" component={Configuration} />
+      <Tab.Screen name="Search" component={Search} />
+
+
     </Tab.Navigator>
   );
 }

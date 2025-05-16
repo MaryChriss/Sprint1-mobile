@@ -3,11 +3,17 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { StyleSheet, Text, View } from 'react-native';
 import Configuration from "../screens/Configuration";
 import BottomTabsNavigator from "./BottomTabsNavigator";
+import Login from "../screens/Login";
+import Register from "../screens/Register";
+import Search from "../screens/Search";
 
 
 export type RootStackParamList = {
   Home: undefined;
   Configuration: undefined;
+  Login: undefined;
+  Register: undefined;
+  Search: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -22,6 +28,9 @@ export default function RootNavigator() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="Configuration" component={Configuration} />
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}  />
+        <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
+        <Stack.Screen name="Search" component={Search} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
