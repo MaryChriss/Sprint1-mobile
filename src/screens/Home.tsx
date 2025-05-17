@@ -4,7 +4,6 @@ import Header from "../../components/header/header";
 import MapaMotos from "../../components/mapa/mapa";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 export default function Home() {
 
@@ -19,10 +18,6 @@ export default function Home() {
                 <Text style={styles.filialTitle}>Mapa de Vagas:</Text>
                 <MapaMotos />
             </View>
-
-            <TouchableOpacity style={styles.search} onPress={() => navigation.navigate('Search')} >
-    <FontAwesome6 name="magnifying-glass" size={24} />
-  </TouchableOpacity>
         </View>
     );
 }

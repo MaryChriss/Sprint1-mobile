@@ -1,35 +1,12 @@
-// MapaVagas.tsx
 import React, { useState } from 'react';
-import {
-  View,
-  Modal,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Dimensions,
-} from 'react-native';
+import { View, Modal, Text, StyleSheet, TouchableOpacity,ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Divider } from 'react-native-paper';
 
 export default function MapaVagas() {
   const [modalVisible, setModalVisible] = useState(false);
-
-
-  // Novo: número total de motos
   const totalMotos = 142;
-
-  // Novo: define um número fixo de colunas
   const numColunas = 8;
-
-  // Novo: calcula quantas linhas serão necessárias
-  const numLinhas = Math.ceil(totalMotos / numColunas);
-
-    const windowWidth = Dimensions.get('window').width;
-const gridWidth = numColunas * 38; // 30 (vaga) + 2*4 (margem)
-
-const scale = gridWidth > windowWidth ? windowWidth / gridWidth : 1;
-
 
   const motos = Array.from({ length: totalMotos }).map((_, index) => ({
     id: index,
@@ -41,7 +18,7 @@ const scale = gridWidth > windowWidth ? windowWidth / gridWidth : 1;
     vagasManutencao: number;
   };
 
-  const previewMotos = motos.slice(0, 24); // Apenas uma parte do total
+  const previewMotos = motos.slice(0, 24);
 
 
   const Tabela = ({ vagasPatio, vagasManutencao }: TabelaProps) => (
@@ -75,53 +52,50 @@ const renderMapa = (motosParaRenderizar: typeof motos) => (
   return (
     <View style={styles.container}>
       <View style={styles.mapaContainer}>
-  {renderMapa(previewMotos)}
-  <TouchableOpacity
-    style={styles.fullscreenButton}
-    onPress={() => setModalVisible(true)}
-  >
-    <Icon name="arrow-expand" size={20} color="#000" />
-  </TouchableOpacity>
-</View>
+        {renderMapa(previewMotos)}
+        <TouchableOpacity
+          style={styles.fullscreenButton}
+          onPress={() => setModalVisible(true)}
+        >
+          <Icon name="arrow-expand" size={20} color="#000" />
+        </TouchableOpacity>
+      </View>
 
 
-      <Modal
+    <Modal
         visible={modalVisible}
         animationType="slide"
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.mapaContainerModal}>
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.mapaContainerModal}>
             <Text style={styles.modalTitle}>Mapa Completo</Text>
             <ScrollView
-  contentContainerStyle={{ alignItems: 'center' }}
-  minimumZoomScale={1}
-  maximumZoomScale={3}
-  showsHorizontalScrollIndicator={false}
-  showsVerticalScrollIndicator={false}
-  bouncesZoom={true}
-  centerContent={true}
->
-  {renderMapa(motos)} {/* Mapa completo com zoom */}
-  <View style={styles.tableContainer}>
-    <Tabela vagasPatio={vagasPatio} vagasManutencao={vagasManutencao} />
-  </View>
-</ScrollView>
-
-
-            
-          </View>
+              contentContainerStyle={{ alignItems: 'center' }}
+              minimumZoomScale={1}
+              maximumZoomScale={3}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              bouncesZoom={true}
+              centerContent={true}
+            >
+              {renderMapa(motos)}
+              <View style={styles.tableContainer}>
+                  <Tabela vagasPatio={vagasPatio} vagasManutencao={vagasManutencao} />
+              </View>
+            </ScrollView> 
+        </View>
 
           <TouchableOpacity
             onPress={() => setModalVisible(false)}
             style={styles.closeButton}
           >
-            <View>
-              <Icon name="close" size={28} color="#fff" />
-            </View>
+              <View>
+                <Icon name="close" size={28} color="#fff" />
+              </View>
           </TouchableOpacity>
-        </View>
-      </Modal>
-    </View>
+      </View>
+    </Modal>
+  </View>
   );
 }
 

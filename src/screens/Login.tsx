@@ -15,7 +15,7 @@ export default function Login() {
       if (data) {
         const user = JSON.parse(data);
         setEmail(user.email);
-        setPassword(user.password); // pré-preenche para facilitar teste
+        setPassword(user.password);
       }
     };
     loadSavedData();

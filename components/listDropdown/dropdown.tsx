@@ -1,11 +1,11 @@
-import * as React from 'react';
 import { List } from 'react-native-paper';
 import { StyleSheet, Text, View } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
+import React, { useState } from 'react';
 
 const Dropdown = () => {
-  const [expanded, setExpanded] = React.useState(false);
-  const [selectedItem, setSelectedItem] = React.useState('Selecione uma filial');
+  const [expanded, setExpanded] = useState(false);
+  const [selectedItem, setSelectedItem] = useState('Selecione uma filial');
 
   const handlePress = () => setExpanded(!expanded);
 
