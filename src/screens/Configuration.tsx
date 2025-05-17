@@ -43,7 +43,11 @@ export default function Search() {
                             placeholderTextColor="#999"
                             value={text}
                             onChangeText={setText}
-                            underlineColorAndroid="transparent"
+                            underlineColor="transparent"
+                            activeOutlineColor="#fff"
+                            outlineColor="#fff"
+                            mode="outlined"
+                            theme={{ colors: { text: '#000', background: '#fff' } }}
                             />
                         </View>
                     </View>
@@ -159,16 +163,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   inputContainer: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    paddingHorizontal: 10,
-    paddingVertical: 0,
-    height: 45,
+    flex: 1,
   },
   input: {
+    backgroundColor: '#fff',
     fontSize: 16,
-    backgroundColor: 'transparent',
-    marginBottom: 100,
+     height: 40,
   },
       dropdownContainer: {
     borderRadius: 12,

@@ -10,6 +10,7 @@ export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
 
   const handleRegister = async () => {
     if (!name || !email || !password) {
@@ -20,6 +21,15 @@ export default function Register() {
       })
       return;
     }
+
+      if (!validateEmail(email)) {
+    showMessage({
+      message: "Erro",
+      description: "Digite um email válido.",
+      type: "danger",
+    });
+    return;
+  }
 
     const userData = { name, email, password };
     await AsyncStorage.setItem('userData', JSON.stringify(userData));

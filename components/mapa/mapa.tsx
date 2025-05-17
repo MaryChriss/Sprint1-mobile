@@ -8,28 +8,33 @@ export default function MapaVagas() {
     vagasPatio: number;
     vagasManutencao: number;
   };
+  
 
   const [modalVisible, setModalVisible] = useState(false);
-  const totalMotos = 142;
-  const numColunas = 8;
-  const motos = Array.from({ length: totalMotos }).map((_, index) => ({
-    id: index,
-    ocupada: Math.random() > 0.5,
-  }));
-  const previewMotos = motos.slice(0, 24);
-  const vagasManutencao = 5;
-  const vagasPatio = motos.filter(m => !m.ocupada).length;
+  const totalMotos = 90;
+  const totalVagasPatio = 320;
+  const motosManutencao = 5; 
+  const motosPatio = totalMotos - motosManutencao;
 
-  const Tabela = ({ vagasPatio, vagasManutencao }: TabelaProps) => (
-    <View style={styles.container}>
-      <Text style={styles.label}>Resumo de Vagas</Text>
-      <Divider style={styles.divider} />
-      <Text style={styles.text}>Vagas no Pátio: {vagasPatio}</Text>
-      <Divider style={styles.divider} />
-      <Text style={styles.text}>Vagas na Manutenção: {vagasManutencao}</Text>
-      <Divider style={styles.divider} />
-    </View>
-  );
+  const numColunas = 8;
+const motos = Array.from({ length: totalVagasPatio }, (_, index) => ({
+  id: index,
+  ocupada: index < motosPatio
+}));
+
+
+  const previewMotos = motos.slice(0, 24);
+
+const Tabela = ({ vagasPatio, vagasManutencao }: TabelaProps) => (
+  <View style={styles.container}>
+    <Text style={styles.label}>Resumo de Vagas</Text>
+    <Divider style={styles.divider} />
+    <Text style={styles.text}>Motos no Pátio: {vagasPatio}</Text>
+    <Divider style={styles.divider} />
+    <Text style={styles.text}>Motos na Manutenção: {vagasManutencao}</Text>
+    <Divider style={styles.divider} />
+  </View>
+);
 
 const renderMapa = (motosParaRenderizar: typeof motos) => (
   <View style={[styles.grid, { width: numColunas * 38 }]}>
@@ -73,7 +78,7 @@ const renderMapa = (motosParaRenderizar: typeof motos) => (
             >
               {renderMapa(motos)}
               <View style={styles.tableContainer}>
-                  <Tabela vagasPatio={vagasPatio} vagasManutencao={vagasManutencao} />
+                  <Tabela vagasPatio={motosPatio} vagasManutencao={motosManutencao} />
               </View>
             </ScrollView> 
         </View>
