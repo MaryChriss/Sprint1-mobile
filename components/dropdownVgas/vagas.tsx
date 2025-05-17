@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 
-export const Vagas = () => {
+export default function Vagas() {
   const [quantidade, setQuantidade] = useState(60); // mínimo 60
 
   const aumentar = () => setQuantidade(prev => prev + 1);
@@ -12,7 +12,7 @@ export const Vagas = () => {
   };
 
   return (
-    <View style={{ width: 150, marginTop: 15 }}>
+    <View style={{ width: 130, height: 49, marginTop: 15 }}>
       <Text style={styles.filialTitle}>Qnt. de Vagas:</Text>
 
       <View style={styles.counterContainer}>
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   filialTitle: {
     color: '#fff',
     fontSize: 15,
-    marginTop: 20,
+    marginTop: 5,
     marginLeft: 4,
     marginBottom: 10,
   },
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
     borderRadius: 12,
-    padding: 15,
+    padding: 10,
   },
   button: {
     backgroundColor: '#0da32189',

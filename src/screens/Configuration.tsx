@@ -1,9 +1,9 @@
 import {Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TextInput } from 'react-native-paper';
-import { Vagas } from '../../components/dropdownVgas/vagas';
-import { Metragem } from '../../components/dropdownMetragem/metragem';
+import Vagas from '../../components/dropdownVgas/vagas';
+import Metragem from '../../components/dropdownMetragem/metragem';
 import Header from '../../components/header/header';
-import { Gateways } from '../../components/dropdowGateways/gateways';
+import Gateways from '../../components/dropdowGateways/gateways';
 import { Modal, Pressable } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -12,18 +12,17 @@ import React, { useState } from 'react';
 
 export default function Search() {
 
-    const opcoesZona = [
+  const [text, setText] = useState('');
+  const [showZonas, setShowZonas] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [zonas, setZonas] = useState(['entrada', 'saida', 'centro', 'manutencao']);
+    
+  const opcoesZona = [
   { label: 'Entrada', value: 'entrada' },
   { label: 'Saida', value: 'saida' },
   { label: 'Centro', value: 'centro' },
   { label: 'Manutenção', value: 'manutencao' },
 ];
-
-    const [text, setText] = useState('');
-    const [showZonas, setShowZonas] = useState(false);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [zonas, setZonas] = useState(['entrada', 'saida', 'centro', 'manutencao']);
-    
 
     return (
         <ScrollView style={styles.container}>
@@ -110,10 +109,13 @@ export default function Search() {
                             <View style={styles.modalContent}>
                                 <Text style={styles.modalTitle}>Ajuda - Configurar Zonas</Text>
                                 <Text style={styles.modalText}>
-                                Você pode configurar até 4 zonas diferentes no pátio. Exemplos: <Text style={styles.modalTextDestaq}>Entrada, Saída, Centro, Manutenção.</Text>
+                                Você pode configurar até 4 zonas diferentes no pátio. Exemplos: 
+                                <Text style={styles.modalTextDestaq}>Entrada, Saída, Centro, Manutenção.</Text>
                                 </Text>
 
-                                <Text style={styles.modalText}>Isso permite <Text style={styles.modalTextDestaq}>rastrear onde cada moto está dentro do pátio em tempo real.</Text></Text>
+                                <Text style={styles.modalText}>Isso permite 
+                                <Text style={styles.modalTextDestaq}>rastrear onde cada moto está dentro do pátio em tempo real.</Text>
+                                </Text>
 
                                 <Pressable style={styles.modalButton} onPress={() => setModalVisible(false)}>
                                 <Text style={styles.modalButtonText}>Fechar</Text>
@@ -159,16 +161,14 @@ const styles = StyleSheet.create({
   inputContainer: {
     backgroundColor: 'white',
     borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    elevation: 2,
+    paddingHorizontal: 10,
+    paddingVertical: 0,
+    height: 45,
   },
   input: {
     fontSize: 16,
-    color: '#333',
     backgroundColor: 'transparent',
-    paddingVertical: 0,
-    paddingHorizontal: 0,
+    marginBottom: 100,
   },
       dropdownContainer: {
     borderRadius: 12,
@@ -193,13 +193,14 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 17,
     marginLeft: 4,
     flex: 1,
+    fontWeight: 'bold',
   },
   titlePrinc: {
     color: '#fff',
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 20,

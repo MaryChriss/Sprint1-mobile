@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import Header from './components/header/header';
 import RootNavigator from './src/navigation/RootNavigator';
+import FlashMessage from 'react-native-flash-message';
 
 export default function App() {
   return (
-       <RootNavigator />
-
+    <>
+      <RootNavigator />
+      <StatusBar style="light" />
+      <FlashMessage position="top" />
+    </>
   );
 }

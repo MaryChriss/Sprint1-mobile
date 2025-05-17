@@ -6,9 +6,6 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 
 export default function Home() {
-
-    const navigation = useNavigation<any>();
-        
     return (
         <View style={styles.container}>
             <Header />

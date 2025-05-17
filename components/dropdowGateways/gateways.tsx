@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 
-export const Gateways = () => {
+export default function Gateways() {
   const [quantidade, setQuantidade] = useState(2);
 
   const aumentar = () => {
@@ -18,7 +18,7 @@ export const Gateways = () => {
   };
 
   return (
-    <View style={{ width: 150, marginLeft: 25 }}>
+    <View style={{ width: 130, marginLeft: 35 }}>
       <Text style={styles.filialTitle}>Qnt. de Gateways:</Text>
 
       <View style={styles.counterContainer}>
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   filialTitle: {
     color: '#fff',
     fontSize: 15,
-    marginTop: 20,
+    marginTop: 10,
     marginLeft: 4,
     marginBottom: 10,
   },
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'white',
     borderRadius: 12,
-    padding: 15,
+    padding: 10,
     elevation: 2,
   },
   button: {

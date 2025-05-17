@@ -1,12 +1,13 @@
 import { StyleSheet, Text, View, TextInput } from 'react-native';
 import React, { useState } from 'react';
 
-export const Metragem = () => {
+export default function Metragem() {
   const [metragem, setMetragem] = useState('');
 
   return (
-    <View style={{ width: 150 }}>
-      <Text style={styles.filialTitle}>Metragem do Pátio (m²):</Text>
+    <View style={{  width: 130, marginTop: 20 }}>
+        <Text style={styles.filialTitle}>Metragem:</Text>
+
 
       <View style={styles.inputContainer}>
         <TextInput
@@ -27,27 +28,21 @@ const styles = StyleSheet.create({
   filialTitle: {
     color: '#fff',
     fontSize: 15,
-    marginTop: 20,
-    marginLeft: 4,
-    marginBottom: 10,
+    marginBottom: 9,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
     borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    elevation: 2,
+    paddingHorizontal: 20,
+    paddingVertical: 3,
   },
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
   },
   suffix: {
     fontSize: 16,
-    color: '#333',
-    marginLeft: 8,
   },
 });

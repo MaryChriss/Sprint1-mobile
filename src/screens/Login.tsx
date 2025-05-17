@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ImageBackground, Text, View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { showMessage } from "react-native-flash-message";
 
 export default function Login() {
   const navigation = useNavigation<any>();
@@ -21,19 +22,28 @@ export default function Login() {
     loadSavedData();
   }, []);
 
-  const handleLogin = async () => {
-    const data = await AsyncStorage.getItem('userData');
-    if (data) {
-      const user = JSON.parse(data);
-      if (user.email === email && user.password === password) {
-        navigation.navigate('Home');
-      } else {
-        Alert.alert("Erro", "Email ou senha incorretos.");
-      }
+
+const handleLogin = async () => {
+  const data = await AsyncStorage.getItem('userData');
+  if (data) {
+    const user = JSON.parse(data);
+    if (user.email === email && user.password === password) {
+      navigation.navigate('Home');
     } else {
-      Alert.alert("Erro", "Nenhum usuário cadastrado.");
+      showMessage({
+        message: "Erro",
+        description: "Email ou senha incorretos.",
+        type: "danger",
+      });
     }
-  };
+  } else {
+    showMessage({
+      message: "Erro",
+      description: "Nenhum usuário cadastrado.",
+      type: "danger",
+    });
+  }
+};
 
   return (
     <ImageBackground

@@ -4,22 +4,21 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Divider } from 'react-native-paper';
 
 export default function MapaVagas() {
-  const [modalVisible, setModalVisible] = useState(false);
-  const totalMotos = 142;
-  const numColunas = 8;
-
-  const motos = Array.from({ length: totalMotos }).map((_, index) => ({
-    id: index,
-    ocupada: Math.random() > 0.5,
-  }));
-
-  type TabelaProps = {
+    type TabelaProps = {
     vagasPatio: number;
     vagasManutencao: number;
   };
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const totalMotos = 142;
+  const numColunas = 8;
+  const motos = Array.from({ length: totalMotos }).map((_, index) => ({
+    id: index,
+    ocupada: Math.random() > 0.5,
+  }));
   const previewMotos = motos.slice(0, 24);
-
+  const vagasManutencao = 5;
+  const vagasPatio = motos.filter(m => !m.ocupada).length;
 
   const Tabela = ({ vagasPatio, vagasManutencao }: TabelaProps) => (
     <View style={styles.container}>
@@ -32,10 +31,6 @@ export default function MapaVagas() {
     </View>
   );
 
-  const patioMotos = motos.slice(0, 24);
-  const vagasPatio = patioMotos.filter(m => !m.ocupada).length;
-  const vagasManutencao = 5;
-
 const renderMapa = (motosParaRenderizar: typeof motos) => (
   <View style={[styles.grid, { width: numColunas * 38 }]}>
     {motosParaRenderizar.map((moto, index) => (
@@ -47,8 +42,6 @@ const renderMapa = (motosParaRenderizar: typeof motos) => (
     ))}
   </View>
 );
-
-
   return (
     <View style={styles.container}>
       <View style={styles.mapaContainer}>

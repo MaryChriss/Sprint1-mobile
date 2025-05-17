@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { ImageBackground, Text, View, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { showMessage } from "react-native-flash-message";
 
 export default function Register() {
   const navigation = useNavigation<any>();
@@ -12,14 +13,22 @@ export default function Register() {
 
   const handleRegister = async () => {
     if (!name || !email || !password) {
-      Alert.alert("Erro", "Preencha todos os campos.");
+      showMessage({
+        message: "Erro", 
+        description: "Preencha todos os campos.",
+        type: "danger",
+      })
       return;
     }
 
     const userData = { name, email, password };
     await AsyncStorage.setItem('userData', JSON.stringify(userData));
 
-    Alert.alert("Sucesso", "Cadastro realizado!");
+    showMessage({
+      message: "Sucesso",
+      description: "Cadastro realizado com sucesso.",
+      type: "success",
+    });
     setName('');
     setEmail('');
     setPassword('');
