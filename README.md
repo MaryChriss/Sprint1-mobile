@@ -1,4 +1,4 @@
-# futureStack
+# futureStack 
 
 Sistema inteligente de rastreamento de motos via Wi-Fi, com mapeamento digital em tempo real e adaptável a diferentes filiais.
 
@@ -54,6 +54,6 @@ O módulo de localização real via Wi-Fi e gateways será integrado futuramente
 
 ## 👥 Integrantes
 
-- Mariana RM: 554773
+- Mariana Christina RM: 554773
 - Gabriela Moguinho RM: 556143
 - Henrique Maciel RM: 556480
