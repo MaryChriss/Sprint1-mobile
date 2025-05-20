@@ -31,7 +31,7 @@ Além disso, o sistema permite **buscas por placa ou modelo da moto** e é **ada
 
 ```bash
 git clone https://github.com/seu-usuario/Sprint1-mobile.git
-cd futureStack
+cd Sprint1-mobile
 ```
 
 2. **Baixar dependecias**
