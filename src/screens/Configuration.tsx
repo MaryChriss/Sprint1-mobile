@@ -8,21 +8,14 @@ import { Modal, Pressable } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Dropdown } from 'react-native-element-dropdown';
 import React, { useState } from 'react';
+import MapaVagas from "../../components/mapa/mapa";
 
 
 export default function Search() {
 
   const [text, setText] = useState('');
-  const [showZonas, setShowZonas] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [zonas, setZonas] = useState(['entrada', 'saida', 'centro', 'manutencao']);
-    
-  const opcoesZona = [
-  { label: 'Entrada', value: 'entrada' },
-  { label: 'Saida', value: 'saida' },
-  { label: 'Centro', value: 'centro' },
-  { label: 'Manutenção', value: 'manutencao' },
-];
+
 
     return (
         <ScrollView style={styles.container}>
@@ -63,79 +56,11 @@ export default function Search() {
                     </View>
                 </View>
 
-                <View>
-                    <View style={styles.header}>
-                        <TouchableOpacity onPress={() => setModalVisible(true)}>
-                        <MaterialIcons name="help-outline" size={20} color="green" />
-                        </TouchableOpacity>
-
-                        <Text style={styles.title}>Configurar Zonas:</Text>
-
-                        <TouchableOpacity onPress={() => setShowZonas(prev => !prev)}>
-                        <MaterialIcons
-                            name={showZonas ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
-                            size={24}
-                            color="green"
-                        />
-                        </TouchableOpacity>
-                    </View>
-
-                    {showZonas && (
-                        <View style={styles.zonasContainer}>
-                        {zonas.map((zonaSelecionada, index) => (
-                            <View key={index} style={styles.zonaLinha}>
-                            <Text style={styles.zonaLabel}>Zona {index + 1}:</Text>
-                            <Dropdown
-                                data={opcoesZona}
-                                labelField="label"
-                                valueField="value"
-                                value={zonaSelecionada}
-                                onChange={item => {
-                                const novaZonas = [...zonas];
-                                novaZonas[index] = item.value;
-                                setZonas(novaZonas);
-                                }}
-                                style={styles.dropdown}
-                                placeholder=""
-                            />
-                            </View>
-                        ))}
-                        </View>
-                    )}
-
-                        <Modal
-                            visible={modalVisible}
-                            transparent
-                            animationType="fade"
-                            onRequestClose={() => setModalVisible(false)}
-                        >
-                            <View style={styles.modalOverlay}>
-                            <View style={styles.modalContent}>
-                                <Text style={styles.modalTitle}>Ajuda - Configurar Zonas</Text>
-                                <Text style={styles.modalText}>
-                                Você pode configurar até 4 zonas diferentes no pátio. Exemplos: 
-                                <Text style={styles.modalTextDestaq}>Entrada, Saída, Centro, Manutenção.</Text>
-                                </Text>
-
-                                <Text style={styles.modalText}>Isso permite 
-                                <Text style={styles.modalTextDestaq}>rastrear onde cada moto está dentro do pátio em tempo real.</Text>
-                                </Text>
-
-                                <Pressable style={styles.modalButton} onPress={() => setModalVisible(false)}>
-                                <Text style={styles.modalButtonText}>Fechar</Text>
-                                </Pressable>
-                            </View>
-                            </View>
-                        </Modal>
-                </View>
-
                 <View style={styles.containermap}>
-                    <Text style={styles.titlemap}>Visualização:</Text>
+                <Text style={styles.titlemap}>Visualização:</Text>
+                <MapaVagas />
+              </View>
 
-                    <Image
-                        source={require('../../assets/mapaEx.png')}
-                        style={styles.map}/>
-                </View>
             </View>
         </ScrollView>
     );

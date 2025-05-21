@@ -16,10 +16,8 @@ const motos = [
 ];
 
 const zonasOpcoes = [
-    { label: 'setor 1', value: 'setor 1' },
-    { label: 'setor 2', value: 'setor 2' },
-    { label: 'setor 3', value: 'setor 3' },
-    { label: 'setor 4', value: 'setor 4' },
+    { label: 'zona A', value: 'zona A' },
+    { label: 'zona B', value: 'zona B' },
   ];
 
   const [zonaSelecionada, setZonaSelecionada] = useState(null);

@@ -17,13 +17,20 @@ export default function MapaVagas() {
   const motosPatio = totalMotos - motosManutencao;
 
   const numColunas = 8;
-const motos = Array.from({ length: totalVagasPatio }, (_, index) => ({
+
+const motosZonaA = Array.from({ length: totalVagasPatio }, (_, index) => ({
   id: index,
   ocupada: index < motosPatio
 }));
 
+const motosZonaB = Array.from({ length: 12 }, (_, index) => ({
+  id: index,
+  ocupada: index < motosManutencao
+}));
 
-  const previewMotos = motos.slice(0, 24);
+
+const previewMotosA = motosZonaA.slice(0, 24);
+const previewMotosB = motosZonaB.slice(0, 12);
 
 const Tabela = ({ vagasPatio, vagasManutencao }: TabelaProps) => (
   <View style={styles.container}>
@@ -36,8 +43,9 @@ const Tabela = ({ vagasPatio, vagasManutencao }: TabelaProps) => (
   </View>
 );
 
-const renderMapa = (motosParaRenderizar: typeof motos) => (
-  <View style={[styles.grid, { width: numColunas * 38 }]}>
+const renderMapa = (titulo: string, motosParaRenderizar: typeof motosZonaA, corFundo: string) => (
+  <View style={[styles.grid, { width: numColunas * 38, backgroundColor: corFundo }]}>
+    <Text style={styles.subtituloMapa}>{titulo}</Text>
     {motosParaRenderizar.map((moto, index) => (
       <View key={index} style={styles.vaga}>
         {moto.ocupada && (
@@ -47,17 +55,20 @@ const renderMapa = (motosParaRenderizar: typeof motos) => (
     ))}
   </View>
 );
+
   return (
     <View style={styles.container}>
       <View style={styles.mapaContainer}>
-        {renderMapa(previewMotos)}
-        <TouchableOpacity
-          style={styles.fullscreenButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <Icon name="arrow-expand" size={20} color="#000" />
-        </TouchableOpacity>
-      </View>
+      {renderMapa('Zona A - Pátio', previewMotosA, '#ffffffb2')}
+      {renderMapa('Zona B - Manutenção', previewMotosB, '#d1e7dd')}
+      <TouchableOpacity
+        style={styles.fullscreenButton}
+        onPress={() => setModalVisible(true)}
+      >
+        <Icon name="arrow-expand" size={20} color="#000" />
+      </TouchableOpacity>
+    </View>
+
 
 
     <Modal
@@ -67,20 +78,15 @@ const renderMapa = (motosParaRenderizar: typeof motos) => (
       <View style={styles.modalContainer}>
         <View style={styles.mapaContainerModal}>
             <Text style={styles.modalTitle}>Mapa Completo</Text>
-            <ScrollView
-              contentContainerStyle={{ alignItems: 'center' }}
-              minimumZoomScale={1}
-              maximumZoomScale={3}
-              showsHorizontalScrollIndicator={false}
-              showsVerticalScrollIndicator={false}
-              bouncesZoom={true}
-              centerContent={true}
-            >
-              {renderMapa(motos)}
-              <View style={styles.tableContainer}>
-                  <Tabela vagasPatio={motosPatio} vagasManutencao={motosManutencao} />
-              </View>
-            </ScrollView> 
+            <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
+            {renderMapa('Zona A - Pátio', motosZonaA, '#ffffffb2')}
+            {renderMapa('Zona B - Manutenção', motosZonaB, '#d1e7dd')}
+
+            <View style={styles.tableContainer}>
+              <Tabela vagasPatio={motosPatio} vagasManutencao={motosManutencao} />
+            </View>
+          </ScrollView>
+
         </View>
 
           <TouchableOpacity
@@ -123,6 +129,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  subtituloMapa: {
+  fontWeight: 'bold',
+  fontSize: 16,
+  textAlign: 'center',
+  marginBottom: 10,
+  color: '#333',
+},
   grid: {
     backgroundColor: '#ffffffb2',
     padding: 15,
