@@ -14,8 +14,6 @@ import MapaVagas from "../../components/mapa/mapa";
 export default function Search() {
 
   const [text, setText] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
-
 
     return (
         <ScrollView style={styles.container}>

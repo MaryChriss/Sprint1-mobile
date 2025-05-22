@@ -12,7 +12,7 @@ export default function Vagas() {
   };
 
   return (
-    <View style={{ width: 130, height: 49, marginTop: 15 }}>
+    <View style={{ width: 150, height: 49, marginTop: 15, marginLeft: 14 }}>
       <Text style={styles.filialTitle}>Qnt. de Vagas:</Text>
 
       <View style={styles.counterContainer}>

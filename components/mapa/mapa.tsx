@@ -44,7 +44,7 @@ const Tabela = ({ vagasPatio, vagasManutencao }: TabelaProps) => (
 );
 
 const renderMapa = (titulo: string, motosParaRenderizar: typeof motosZonaA, corFundo: string) => (
-  <View style={[styles.grid, { width: numColunas * 38, backgroundColor: corFundo }]}>
+  <View style={[styles.grid, { width: numColunas * 38, backgroundColor: corFundo, marginBottom: 15 }]}>
     <Text style={styles.subtituloMapa}>{titulo}</Text>
     {motosParaRenderizar.map((moto, index) => (
       <View key={index} style={styles.vaga}>
