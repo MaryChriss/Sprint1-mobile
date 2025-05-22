@@ -4,11 +4,11 @@ Sistema inteligente de rastreamento de motos via Wi-Fi, com mapeamento digital e
 
 ## 📋 Descrição da Solução
 
-O **futureStack** é um sistema de monitoramento de motos que utiliza dispositivos Wi-Fi embarcados e gateways distribuídos no pátio da empresa. Cada moto possui um módulo que se conecta automaticamente ao gateway mais próximo, permitindo o rastreamento da sua posição com base na intensidade do sinal.
+O **futureStack** é uma solução de monitoramento de motos que utiliza gateways Wi-Fi posicionados estrategicamente para detectar automaticamente a presença de veículos em duas zonas principais: **Zona A (Pátio)** e **Zona B (Manutenção)**.
 
-O sistema identifica a movimentação (entrada, deslocamento e saída) das motos e atualiza sua posição em tempo real em um **mapa digital**. O pátio é dividido em zonas como **entrada**, **centro** e **saída**, facilitando a visualização e gestão de fluxo.
+Cada moto emite sinal que é captado pelo **gateway instalado em cada zona**. Com base na intensidade do sinal (`RSSI`), o sistema identifica a localização aproximada da moto e atualiza sua posição em um **mapa digital interativo**. Além disso, são apresentados dados como **metragem total de cada zona**, **ocupação atual** e uma **visualização detalhada em tempo real**.
 
-Além disso, o sistema permite **buscas por placa ou modelo da moto** e é **adaptável para uso em diferentes filiais**, com mapas configuráveis por localização.
+O sistema também permite **buscas por placa ou modelo**, e é totalmente **adaptável a diferentes filiais**, com cadastro personalizado da metragem de pátio e manutenção, além de gateways exclusivos por local.
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -20,11 +20,13 @@ Além disso, o sistema permite **buscas por placa ou modelo da moto** e é **ada
 
 ## 📦 Estrutura da Interface
 
-- Visualização em tempo real das motos no pátio
-- Ícones representando motos ocupando ou não vagas
+- Visualização em tempo real das motos por zona (Pátio e Manutenção)
+- Ícones de moto ocupando as vagas
 - Modal com **mapa completo** e **resumo de ocupação**
-- Busca rápida por placa ou modelo
-
+- Cadastro de **metragem das zonas**
+- Definição fixa de **1 gateway por zona**
+- Busca por placa
+  
 ## 🛠️ Como Rodar o Projeto Localmente
 
 1. **Clone o repositório:**
