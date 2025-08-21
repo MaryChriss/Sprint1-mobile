@@ -1,12 +1,11 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from "react-native";
 import Configuration from "../screens/Configuration";
 import BottomTabsNavigator from "./BottomTabsNavigator";
 import Login from "../screens/Login";
 import Register from "../screens/Register";
 import Search from "../screens/Search";
-
 
 export type RootStackParamList = {
   Home: undefined;
@@ -20,7 +19,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator() {
   return (
-    <NavigationContainer >
+    <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
@@ -28,9 +27,21 @@ export default function RootNavigator() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="Configuration" component={Configuration} />
-        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}  />
-        <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
-        <Stack.Screen name="Search" component={Search} options={{ headerShown: false }} />
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Register"
+          component={Register}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Search"
+          component={Search}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -39,8 +50,8 @@ export default function RootNavigator() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#3d2929',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#3d2929",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

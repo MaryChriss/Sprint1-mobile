@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function Gateways() {
   return (
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   gatewayBox: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 12,
     width: 160,
@@ -32,14 +32,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 14,
-    color: '#333',
-    fontWeight: 'bold',
+    color: "#333",
+    fontWeight: "bold",
     marginBottom: 8,
   },
   fixedValue: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: 'green',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "green",
+    textAlign: "center",
   },
 });

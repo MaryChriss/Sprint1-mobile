@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { View } from 'react-native';
-import { Divider, Text } from 'react-native-paper';
+import * as React from "react";
+import { View } from "react-native";
+import { Divider, Text } from "react-native-paper";
 
 export default function Tabela() {
   <View>
@@ -8,6 +8,5 @@ export default function Tabela() {
     <Divider />
     <Text>Mango</Text>
     <Divider />
-  </View>
-};
-
+  </View>;
+}

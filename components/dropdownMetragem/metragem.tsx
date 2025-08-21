@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, TextInput } from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput } from "react-native";
+import React, { useState } from "react";
 
 export default function Metragem() {
-  const [metragemPatio, setMetragemPatio] = useState('');
-  const [metragemManutencao, setMetragemManutencao] = useState('');
+  const [metragemPatio, setMetragemPatio] = useState("");
+  const [metragemManutencao, setMetragemManutencao] = useState("");
 
   return (
     <View style={styles.container}>
@@ -38,7 +38,7 @@ export default function Metragem() {
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -50,14 +50,14 @@ const styles = StyleSheet.create({
     width: 180,
   },
   label: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 14,
     marginBottom: 6,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
     borderRadius: 12,
     paddingHorizontal: 15,
     paddingVertical: 3,
@@ -68,6 +68,6 @@ const styles = StyleSheet.create({
   },
   suffix: {
     fontSize: 16,
-    color: '#333',
+    color: "#333",
   },
 });
