@@ -19,8 +19,8 @@ export default function Gateways() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
-    marginLeft: 35,
+    marginTop: -80,
+    marginLeft: 15,
     gap: 20,
   },
   gatewayBox: {
