@@ -5,11 +5,11 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import Header from "../../components/header/header";
+import Header from "../../components/header";
 import { TextInput } from "react-native-paper";
 import { useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
-import CardVeiculo from "../../components/card/card";
+import CardVeiculo from "../../components/card";
 
 export default function Search() {
   const motos = [

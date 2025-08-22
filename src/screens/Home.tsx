@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Dropdown from "../../components/listDropdown/dropdown";
-import Header from "../../components/header/header";
-import MapaMotos from "../../components/mapa/mapa";
+import Dropdown from "../../components/dropdown";
+import Header from "../../components/header";
+import MapaMotos from "../../components/mapa";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 

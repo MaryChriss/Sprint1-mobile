@@ -1,204 +1,95 @@
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { TextInput } from "react-native-paper";
-import Vagas from "../../components/dropdownVgas/vagas";
-import Metragem from "../../components/dropdownMetragem/metragem";
-import Header from "../../components/header/header";
-import Gateways from "../../components/dropdowGateways/gateways";
-import { Modal, Pressable } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
-import { Dropdown } from "react-native-element-dropdown";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
-import MapaVagas from "../../components/mapa/mapa";
+import Header from "../../components/header";
+import MapaVagas from "../../components/mapa";
+import InputField from "../../components/InputField";
+import Counter from "../../components/counter";
 
-export default function Search() {
-  const [text, setText] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
+export default function Configuration() {
+  const [filial, setFilial] = useState("");
+  const [quantidade, setQuantidade] = useState(60);
+  const [metragemPatio, setMetragemPatio] = useState("");
+  const [metragemManutencao, setMetragemManutencao] = useState("");
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.container}>
-        <Header />
-        <Text style={styles.titlePrinc}>Configure o Patio:</Text>
+    <View style={styles.screen}>
+      <Header />
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.titlePrinc}>Configure o Pátio:</Text>
 
-        <View>
-          <View style={styles.containera}>
-            <Text style={styles.label}>Nome da Filial</Text>
+        <InputField
+          label="Nome da Filial"
+          value={filial}
+          onChangeText={setFilial}
+          placeholder="Digite o nome da filial"
+        />
 
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={styles.input}
-                placeholder="Digite o nome da filial"
-                placeholderTextColor="#999"
-                value={text}
-                onChangeText={setText}
-                underlineColor="transparent"
-                activeOutlineColor="#fff"
-                outlineColor="#fff"
-                mode="outlined"
-                theme={{ colors: { text: "#000", background: "#fff" } }}
-              />
-            </View>
+        <Counter
+          label="Qnt. de Vagas"
+          value={quantidade}
+          onIncrease={() => setQuantidade((q) => q + 1)}
+          onDecrease={() => setQuantidade((q) => Math.max(30, q - 1))}
+        />
+
+        <InputField
+          label="Metragem Zona A (Pátio)"
+          value={metragemPatio}
+          onChangeText={setMetragemPatio}
+          placeholder="Ex: 200"
+          keyboardType="numeric"
+          suffix="m²"
+        />
+
+        <InputField
+          label="Metragem Zona B (Manutenção)"
+          value={metragemManutencao}
+          onChangeText={setMetragemManutencao}
+          placeholder="Ex: 120"
+          keyboardType="numeric"
+          suffix="m²"
+        />
+
+        <View style={styles.gatewayContainer}>
+          <View style={styles.gatewayBox}>
+            <Text style={styles.gatewayLabel}>Gateway Zona A</Text>
+            <Text style={styles.gatewayValue}>1</Text>
           </View>
-
-          <View style={styles.containerInput}>
-            <Vagas />
-
-            <Metragem />
-          </View>
-
-          <View>
-            <Gateways />
+          <View style={styles.gatewayBox}>
+            <Text style={styles.gatewayLabel}>Gateway Zona B</Text>
+            <Text style={styles.gatewayValue}>1</Text>
           </View>
         </View>
 
-        <View style={styles.containermap}>
-          <Text style={styles.titlemap}>Visualização:</Text>
-          <MapaVagas />
-        </View>
-      </View>
-    </ScrollView>
+        <Text style={styles.titlemap}>Visualização:</Text>
+        <MapaVagas />
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#242424",
-    paddingBottom: 30,
-  },
-  map: {
-    width: 350,
-    height: 350,
-    borderRadius: 12,
-    marginTop: 20,
-    marginBottom: 20,
-    alignSelf: "center",
-  },
-  label: {
-    color: "#fff",
-    fontSize: 15,
-    marginTop: 20,
-    marginLeft: 4,
-    marginBottom: 10,
-  },
-  inputContainer: {
-    flex: 1,
-  },
-  input: {
-    backgroundColor: "#fff",
-    fontSize: 16,
-    height: 40,
-  },
-  dropdownContainer: {
-    borderRadius: 12,
-    overflow: "hidden",
-    backgroundColor: "white",
-    elevation: 2,
-  },
-  containerInput: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-around",
-  },
-  containera: {
-    marginRight: 10,
-    marginLeft: 10,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginTop: 20,
-  },
-  title: {
-    color: "#fff",
-    fontSize: 17,
-    marginLeft: 4,
-    flex: 1,
-    fontWeight: "bold",
-  },
+  screen: { flex: 1, backgroundColor: "#242424" },
+  content: { padding: 20, paddingBottom: 40 }, // só o conteúdo tem padding
   titlePrinc: {
     color: "#fff",
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",
-    marginTop: 20,
-    flex: 1,
+    marginVertical: 20,
   },
-  containermap: {
-    marginTop: 20,
-  },
-  titlemap: {
-    color: "#fff",
-    fontSize: 16,
-    marginBottom: 10,
-    marginLeft: 30,
-  },
-  zonasContainer: {
-    marginTop: 10,
-    gap: 10,
-  },
-  zonaLinha: {
+  gatewayContainer: {
     flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
+    justifyContent: "space-around",
+    marginVertical: 20,
   },
-  zonaLabel: {
-    color: "#fff",
-    fontSize: 14,
-    width: 60,
-    marginLeft: 40,
-  },
-  dropdown: {
-    flex: 1,
+  gatewayBox: {
     backgroundColor: "#fff",
+    padding: 12,
     borderRadius: 12,
-    paddingHorizontal: 12,
-    height: 35,
-    marginRight: 40,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "#050e06aa",
-    justifyContent: "center",
+    width: 150,
     alignItems: "center",
   },
-  modalContent: {
-    backgroundColor: "#d6d6d6",
-    borderRadius: 12,
-    padding: 20,
-    width: "80%",
-  },
-  modalTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  modalText: {
-    fontSize: 14,
-    marginBottom: 20,
-  },
-  modalTextDestaq: {
-    fontSize: 14,
-    marginBottom: 20,
-    color: "#459148",
-    fontWeight: "bold",
-  },
-  modalButton: {
-    backgroundColor: "#4CAF50",
-    borderRadius: 8,
-    paddingVertical: 10,
-    alignItems: "center",
-  },
-  modalButtonText: {
-    color: "white",
-    fontWeight: "bold",
-  },
+  gatewayLabel: { fontWeight: "bold", fontSize: 14, color: "#333" },
+  gatewayValue: { fontSize: 20, fontWeight: "bold", color: "green" },
+  titlemap: { color: "#fff", fontSize: 16, marginBottom: 10, marginLeft: 5 },
 });
