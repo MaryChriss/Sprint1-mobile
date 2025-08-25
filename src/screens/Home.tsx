@@ -3,9 +3,12 @@ import Dropdown from "../../components/dropdown";
 import Header from "../../components/header";
 import MapaMotos from "../../components/mapa";
 import { useNavigation } from "@react-navigation/native";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import React from "react";
 
 export default function Home() {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <Header />
@@ -15,6 +18,13 @@ export default function Home() {
         <Text style={styles.filialTitle}>Mapa de Vagas:</Text>
         <MapaMotos />
       </View>
+
+      <TouchableOpacity
+        style={styles.search}
+        onPress={() => navigation.navigate("Search")}
+      >
+        <AntDesign name="search1" size={24} color="black" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -33,16 +43,16 @@ const styles = StyleSheet.create({
   },
   search: {
     position: "absolute",
-    bottom: 30, // distância do fundo da tela
-    right: 20, // distância da borda direita
+    bottom: 30,
+    right: 20,
     backgroundColor: "#13c431",
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 5, // sombra no Android
-    shadowColor: "#000", // sombra no iOS
+    elevation: 5,
+    shadowColor: "#000",
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
