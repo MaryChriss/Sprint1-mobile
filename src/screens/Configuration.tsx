@@ -4,6 +4,7 @@ import Header from "../../components/header";
 import MapaVagas from "../../components/mapa";
 import InputField from "../../components/InputField";
 import Counter from "../../components/counter";
+import { SafeAreaProvider, SafeAreaView} from "react-native-safe-area-context";
 
 export default function Configuration() {
   const [filial, setFilial] = useState("");
@@ -11,10 +12,11 @@ export default function Configuration() {
   const [metragemPatio, setMetragemPatio] = useState("");
   const [metragemManutencao, setMetragemManutencao] = useState("");
 
-  return (
+return (
+  <SafeAreaView style={{ flex: 1 }}>
     <View style={styles.screen}>
       <Header />
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={styles.content} style={{ flex: 1 }}>
         <Text style={styles.titlePrinc}>Configure o Pátio:</Text>
 
         <InputField
@@ -37,7 +39,7 @@ export default function Configuration() {
           onChangeText={setMetragemPatio}
           placeholder="Ex: 200"
           keyboardType="numeric"
-          suffix="m²"
+          // suffix="m²" ← cuidado se não for suportado
         />
 
         <InputField
@@ -46,7 +48,7 @@ export default function Configuration() {
           onChangeText={setMetragemManutencao}
           placeholder="Ex: 120"
           keyboardType="numeric"
-          suffix="m²"
+          // suffix="m²"
         />
 
         <View style={styles.gatewayContainer}>
@@ -64,7 +66,9 @@ export default function Configuration() {
         <MapaVagas />
       </ScrollView>
     </View>
-  );
+  </SafeAreaView>
+);
+
 }
 
 const styles = StyleSheet.create({

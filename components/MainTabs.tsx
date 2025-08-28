@@ -31,7 +31,7 @@ export default function MainTabs() {
         },
       })}
     >
-      <Tab.Screen name="Home" component={Home} options={{ title: "Home" }} />
+      <Tab.Screen name="Home" component={Home} options={{ title: "aaa" }} />
       <Tab.Screen
         name="Configuration"
         component={Configuration}

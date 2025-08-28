@@ -1,16 +1,14 @@
 import { Button } from "react-native";
-// Importando os pacotes necessários
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme} from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-// Importando as telas que serão exibidas
 import Home from "./src/screens/Home";
 import Search from "./src/screens/Search";
 import MainTabs from "./components/MainTabs";
-// Criando nossa Stack de navegação
+
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={{...DefaultTheme, colors: {...DefaultTheme.colors, background: 'white', primary: '#EB4435'}}}>
       <Stack.Navigator>
         <Stack.Screen
           name="MainTabs"

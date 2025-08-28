@@ -2,16 +2,21 @@ import { List } from "react-native-paper";
 import { StyleSheet, Text, View } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import React, { useState } from "react";
+import { useRoute } from "@react-navigation/native";
 
-export default function Dropdown() {
+export default function Dropdown({ onSelect }: {onSelect?: (item: string) => void }) {
   const [expanded, setExpanded] = useState(false);
   const [selectedItem, setSelectedItem] = useState("Selecione uma filial");
 
+  const route = useRoute();
   const handlePress = () => setExpanded(!expanded);
 
   const handleSelect = (item: string) => {
     setSelectedItem(item);
     setExpanded(false);
+    if(onSelect) {
+      onSelect(item)
+    }
   };
 
   return (
@@ -22,7 +27,7 @@ export default function Dropdown() {
         <List.Accordion
           title={selectedItem}
           expanded={expanded}
-          onPress={handlePress}
+          onPress={() => setExpanded(!expanded)}
           titleStyle={styles.title}
           style={styles.accordion}
           left={(props) => (

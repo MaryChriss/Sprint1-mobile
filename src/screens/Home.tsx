@@ -8,12 +8,13 @@ import React from "react";
 
 export default function Home() {
   const navigation = useNavigation();
+  const [filialSelecionada, setFilialSelecionada] = React.useState<string | null>(null);
 
   return (
     <View style={styles.container}>
       <Header />
 
-      <Dropdown />
+      <Dropdown onSelect={(item) => setFilialSelecionada(item)} />
       <View>
         <Text style={styles.filialTitle}>Mapa de Vagas:</Text>
         <MapaMotos />
@@ -21,7 +22,9 @@ export default function Home() {
 
       <TouchableOpacity
         style={styles.search}
-        onPress={() => navigation.navigate("Search")}
+        onPress={() =>
+          navigation.navigate("Search" as never, { filial: filialSelecionada } as never)
+        }
       >
         <AntDesign name="search1" size={24} color="black" />
       </TouchableOpacity>
