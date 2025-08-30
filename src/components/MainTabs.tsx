@@ -1,10 +1,10 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Entypo from "@expo/vector-icons/Entypo";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Configuration from "../screens/Configuration";
-import Search from "../screens/Search";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Home from "../screens/Home";
+import Profile from "../screens/Profile";
 const Tab = createBottomTabNavigator();
 
 export default function MainTabs() {
@@ -26,6 +26,9 @@ export default function MainTabs() {
             case "Configuration":
               iconName = <FontAwesome5 name="cog" size={size} color={color} />;
               break;
+            case "Profile":
+              iconName = <FontAwesome name="user" size={size} color={color} />;
+              break;
           }
           return iconName;
         },
@@ -39,6 +42,11 @@ export default function MainTabs() {
       <Tab.Screen
         name="Configuration"
         component={Configuration}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
         options={{ headerShown: false }}
       />
     </Tab.Navigator>

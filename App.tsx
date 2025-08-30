@@ -8,6 +8,7 @@ import MainTabs from "./src/components/MainTabs";
 import Login from "./src/screens/Login";
 import Register from "./src/screens/Register";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import Profile from "./src/screens/Profile";
 
 const Stack = createNativeStackNavigator();
 const queryClient = new QueryClient();
@@ -22,7 +23,7 @@ export default function App() {
             colors: {
               ...DefaultTheme.colors,
               background: "white",
-              primary: "#EB4435",
+              primary: "#2E9936",
             },
           }}
         >
@@ -45,6 +46,11 @@ export default function App() {
             <Stack.Screen
               name="Register"
               component={Register}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Profile"
+              component={Profile}
               options={{ headerShown: false }}
             />
           </Stack.Navigator>

@@ -9,7 +9,10 @@ export default function Header() {
   return (
     <View style={styles.container}>
       <View style={styles.name}>
-        <Image source={require("../../assets/logo.png")} />
+        <Image
+          style={{ width: 27, height: 27 }}
+          source={require("../../assets/logo.png")}
+        />
         <Text style={styles.title}>Future Stack</Text>
       </View>
 
