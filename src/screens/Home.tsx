@@ -1,21 +1,23 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Dropdown from "../../components/dropdown";
-import Header from "../../components/header";
-import MapaMotos from "../../components/mapa";
+import Dropdown from "../components/dropdown";
+import Header from "../components/header";
+import MapaMotos from "../components/mapa";
 import { useNavigation } from "@react-navigation/native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import React from "react";
 
 export default function Home() {
   const navigation = useNavigation();
-  const [filialSelecionada, setFilialSelecionada] = React.useState<string | null>(null);
+  const [filialSelecionada, setFilialSelecionada] = React.useState<
+    string | null
+  >(null);
 
   return (
     <View style={styles.container}>
       <Header />
 
       <Dropdown onSelect={(item) => setFilialSelecionada(item)} />
-      <View>
+      <View style={{ margin: 10 }}>
         <Text style={styles.filialTitle}>Mapa de Vagas:</Text>
         <MapaMotos />
       </View>
@@ -23,7 +25,10 @@ export default function Home() {
       <TouchableOpacity
         style={styles.search}
         onPress={() =>
-          navigation.navigate("Search" as never, { filial: filialSelecionada } as never)
+          navigation.navigate(
+            "Search" as never,
+            { filial: filialSelecionada } as never
+          )
         }
       >
         <AntDesign name="search1" size={24} color="black" />
@@ -34,7 +39,6 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   filialTitle: {
-    color: "#fff",
     fontSize: 15,
     fontWeight: "bold",
     marginTop: 150,
@@ -42,13 +46,13 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#242424",
+    backgroundColor: "#f2f2f7",
   },
   search: {
     position: "absolute",
     bottom: 30,
     right: 20,
-    backgroundColor: "#13c431",
+    backgroundColor: "#1a922e",
     width: 60,
     height: 60,
     borderRadius: 30,

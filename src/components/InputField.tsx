@@ -33,8 +33,8 @@ export default function InputField({
 }
 
 const styles = StyleSheet.create({
-  box: { marginBottom: 15 },
-  label: { color: "#fff", fontSize: 14, marginBottom: 6 },
+  box: { marginBottom: 0 },
+  label: { fontSize: 14, marginBottom: 6 },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",

@@ -7,10 +7,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  TextInput,
 } from "react-native";
-import { TextInput } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showMessage } from "react-native-flash-message";
+import InputField from "../components/InputField";
 
 export default function Register() {
   const navigation = useNavigation<any>();
@@ -73,20 +74,14 @@ export default function Register() {
           <View style={styles.loginContainer}>
             <Text style={styles.loginLabel}>Cadastre-se:</Text>
 
-            <TextInput
-              label="Nome"
-              value={name}
-              onChangeText={setName}
-              style={styles.input}
-            />
-            <TextInput
-              label="Email"
+            <InputField
+              placeholder="Email"
               value={email}
               onChangeText={setEmail}
               style={styles.input}
             />
-            <TextInput
-              label="Senha"
+            <InputField
+              placeholder="Senha"
               secureTextEntry
               value={password}
               onChangeText={setPassword}
@@ -149,10 +144,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   containereverything: {
-    marginBottom: -100,
+    marginBottom: -90,
   },
   input: {
-    marginBottom: 10,
+    marginBottom: -10,
     backgroundColor: "rgba(255,255,255,0.1)",
   },
   button: {

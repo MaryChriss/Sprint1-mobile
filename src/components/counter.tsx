@@ -18,7 +18,7 @@ export default function Counter({ label, value, onIncrease, onDecrease }: any) {
 }
 
 const styles = StyleSheet.create({
-  label: { color: "#fff", fontSize: 15, marginBottom: 8 },
+  label: { fontSize: 15, marginBottom: 8 },
   counterContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -34,5 +34,5 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   buttonText: { color: "white", fontSize: 20, fontWeight: "bold" },
-  countText: { fontSize: 20, fontWeight: "bold", color: "#333" },
+  countText: { fontSize: 20, fontWeight: "bold" },
 });

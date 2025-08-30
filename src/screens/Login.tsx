@@ -7,10 +7,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  TextInput,
 } from "react-native";
-import { TextInput } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showMessage } from "react-native-flash-message";
+import InputField from "../components/InputField";
 
 export default function Login() {
   const navigation = useNavigation<any>();
@@ -71,15 +72,14 @@ export default function Login() {
         <View style={styles.containereverything}>
           <View style={styles.loginContainer}>
             <Text style={styles.loginLabel}>Login:</Text>
-            <TextInput
-              label="Email"
-              mode="outlined"
+            <InputField
+              placeholder="Email"
               value={email}
               onChangeText={setEmail}
               style={styles.input}
             />
-            <TextInput
-              label="Senha"
+            <InputField
+              placeholder="Senha"
               secureTextEntry
               value={password}
               onChangeText={setPassword}

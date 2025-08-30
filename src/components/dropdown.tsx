@@ -4,7 +4,11 @@ import Entypo from "@expo/vector-icons/Entypo";
 import React, { useState } from "react";
 import { useRoute } from "@react-navigation/native";
 
-export default function Dropdown({ onSelect }: {onSelect?: (item: string) => void }) {
+export default function Dropdown({
+  onSelect,
+}: {
+  onSelect?: (item: string) => void;
+}) {
   const [expanded, setExpanded] = useState(false);
   const [selectedItem, setSelectedItem] = useState("Selecione uma filial");
 
@@ -14,8 +18,8 @@ export default function Dropdown({ onSelect }: {onSelect?: (item: string) => voi
   const handleSelect = (item: string) => {
     setSelectedItem(item);
     setExpanded(false);
-    if(onSelect) {
-      onSelect(item)
+    if (onSelect) {
+      onSelect(item);
     }
   };
 
@@ -60,7 +64,6 @@ export default function Dropdown({ onSelect }: {onSelect?: (item: string) => voi
 
 const styles = StyleSheet.create({
   filialTitle: {
-    color: "#fff",
     fontSize: 15,
     fontWeight: "bold",
     marginTop: 20,

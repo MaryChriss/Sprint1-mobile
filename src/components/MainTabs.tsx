@@ -1,10 +1,10 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import Entypo from "@expo/vector-icons/Entypo";
-import Configuration from "../src/screens/Configuration";
-import Search from "../src/screens/Search";
+import Configuration from "../screens/Configuration";
+import Search from "../screens/Search";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import Home from "../src/screens/Home";
+import Home from "../screens/Home";
 const Tab = createBottomTabNavigator();
 
 export default function MainTabs() {
@@ -31,11 +31,15 @@ export default function MainTabs() {
         },
       })}
     >
-      <Tab.Screen name="Home" component={Home} options={{ title: "aaa" }} />
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{ headerShown: false }}
+      />
       <Tab.Screen
         name="Configuration"
         component={Configuration}
-        options={{ title: "Configuration" }}
+        options={{ headerShown: false }}
       />
     </Tab.Navigator>
   );

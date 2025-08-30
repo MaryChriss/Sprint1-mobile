@@ -4,18 +4,19 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  TextInput,
 } from "react-native";
 import { scale, verticalScale, moderateScale } from "react-native-size-matters";
-import Header from "../../components/header";
-import { TextInput } from "react-native-paper";
+import Header from "../components/header";
 import { useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
-import CardVeiculo from "../../components/card";
+import CardVeiculo from "../components/card";
 import { useRoute } from "@react-navigation/native";
+import InputField from "../components/InputField";
 
 export default function Search() {
   const route = useRoute();
-  const {filial} = route.params as {filial: string | null}
+  const { filial } = route.params as { filial: string | null };
 
   const motos = [
     { placa: "ABC1D23", local: "Zona 02" },
@@ -35,23 +36,17 @@ export default function Search() {
 
   return (
     <View style={styles.container}>
-      <Header />
-
-      <Text style={styles.titlePrinc}>Sua busca começa aqui</Text>
-      <Text>Filial: {filial ?? "nenhuma filial selecionada"}</Text>
+      <Text style={styles.titlePrinc}>
+        {filial ?? "nenhuma filial selecionada"}
+      </Text>
 
       <View style={styles.linha}>
         <Text style={styles.placaLabel}>Placa:</Text>
         <View style={styles.inputWrapper}>
-          <TextInput
+          <InputField
             style={styles.input}
             value={text}
             onChangeText={setText}
-            underlineColor="transparent"
-            mode="outlined"
-            outlineColor="#fff"
-            activeOutlineColor="#fff"
-            theme={{ colors: { text: "#000", background: "#fff" } }}
           />
         </View>
       </View>
@@ -82,15 +77,15 @@ export default function Search() {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "#f2f2f7",
     flex: 1,
-    backgroundColor: "#242424",
   },
   titlePrinc: {
-    color: "#fff",
     fontSize: scale(20),
     fontWeight: "bold",
     textAlign: "center",
     marginTop: verticalScale(20),
+    marginBottom: verticalScale(-20),
   },
   zonasContainer: {
     gap: verticalScale(10),
@@ -102,41 +97,41 @@ const styles = StyleSheet.create({
     gap: 0,
   },
   zonaLabel: {
-    color: "#fff",
     fontSize: scale(14),
     width: scale(60),
     marginLeft: scale(10),
   },
   placaLabel: {
-    color: "#fff",
     fontSize: scale(14),
     width: scale(60),
     marginLeft: scale(10),
   },
-   linha: {
+  linha: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 0,
     marginTop: verticalScale(20),
     padding: scale(10),
   },
- label: {
+  label: {
     width: scale(60),
-    color: "#fff",
     fontSize: scale(16),
   },
   inputWrapper: {
     flex: 1,
   },
   input: {
-    backgroundColor: "#fff",
+    flex: 1,
+    paddingHorizontal: 10,
+    marginTop: 10,
+    backgroundColor: "white",
+    marginBottom: 20,
     height: verticalScale(40),
     fontSize: scale(16),
   },
   tabsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "#333",
     borderRadius: moderateScale(8),
     marginTop: verticalScale(12),
     padding: scale(4),
@@ -144,26 +139,21 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     paddingVertical: verticalScale(8),
-    backgroundColor: "#333",
     borderRadius: moderateScale(8),
     alignItems: "center",
     marginHorizontal: scale(2),
   },
-  tabSelecionado: {
-    backgroundColor: "#fff",
-  },
+  tabSelecionado: {},
   tabText: {
-    color: "#ccc",
     fontSize: scale(14),
   },
   tabTextSelecionado: {
-    color: "#000",
     fontWeight: "bold",
   },
   dropdown: {
     flex: 1,
     backgroundColor: "#fff",
-    borderRadius: moderateScale(8),
+    borderRadius: moderateScale(11),
     height: verticalScale(40),
     paddingHorizontal: scale(10),
   },

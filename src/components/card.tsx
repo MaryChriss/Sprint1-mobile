@@ -10,7 +10,7 @@ export default function CardVeiculo({ placa, local }: CardVeiculoProps) {
   return (
     <View style={styles.card}>
       <Image
-        source={require("../assets/moto.png")}
+        source={require("../../assets/moto.png")}
         style={styles.image}
         resizeMode="contain"
       />
