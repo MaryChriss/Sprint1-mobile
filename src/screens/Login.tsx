@@ -35,7 +35,7 @@ export default function Login() {
     if (data) {
       const user = JSON.parse(data);
       if (user.email === email && user.password === password) {
-        navigation.navigate("Home");
+        navigation.replace("MainTabs");
       } else {
         showMessage({
           message: "Erro",
