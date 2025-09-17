@@ -9,77 +9,132 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showMessage } from "react-native-flash-message";
 import InputField from "../components/InputField";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { cadastro } from "../services/rotes";
 
 export default function Register() {
   const navigation = useNavigation<any>();
 
   const [step, setStep] = useState<0 | 1>(0);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{
+    name?: string;
+    phone?: string;
+    email?: string;
+    password?: string;
+  }>({});
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const validateEmail = (v: string) => /\S+@\S+\.\S+/.test(v);
-  const validatePhone = (v: string) => /^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/.test(v);
+  const validateName = (v: string) =>
+    /^[A-ZÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ][a-záàâãéèêíìîóòôõúùûç]+(?:\s[A-ZÁÀÂÃÉÈÊÍÌÎÓÒÔÕÚÙÛÇ][a-záàâãéèêíìîóòôõúùûç]+)*$/.test(
+      v.trim()
+    );
+
+  const validatePassword = (v: string) =>
+    /^(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/.test(
+      v.trim()
+    );
+
+  const validateEmail = (v: string) => /^\S+@\S+\.\S+$/.test(v.trim());
+
+  const validatePhone = (v: string) =>
+    /^(\(?\d{2}\)?\s?)?\d{4,5}-?\d{4}$/.test(v.trim());
+
+  const validateField = (
+    field: "name" | "phone" | "email" | "password",
+    value: string
+  ) => {
+    let msg = "";
+
+    if (field === "name") {
+      if (!value?.trim()) msg = "Informe seu nome.";
+      else if (!validateName(value))
+        msg = "Nome deve começar com maiúscula e conter apenas letras.";
+    }
+
+    if (field === "phone") {
+      if (!value?.trim()) msg = "Informe seu telefone.";
+      else if (!validatePhone(value))
+        msg = "Telefone inválido. Ex: (11) 99999-0000";
+    }
+
+    if (field === "email") {
+      if (!value?.trim()) msg = "Informe seu e-mail.";
+      else if (!validateEmail(value)) msg = "E-mail inválido.";
+    }
+
+    if (field === "password") {
+      if (!value?.trim()) msg = "Informe sua senha.";
+      else if (!validatePassword(value))
+        msg =
+          "Senha deve ter 8+ caracteres, com maiúscula, minúscula e número/símbolo.";
+    }
+
+    setErrors((prev) => ({ ...prev, [field]: msg }));
+    return !msg;
+  };
+
+  const normalizePhone = (v: string) => v.replace(/\D/g, "");
 
   const goNext = () => {
-    if (!name || !phone) {
-      showMessage({
-        message: "Complete seus dados",
-        description: "Preencha Nome e Telefone antes de continuar.",
-        type: "warning",
-      });
-      return;
-    }
-    if (!validatePhone(phone)) {
-      showMessage({
-        message: "Telefone inválido",
-        description: "Formato esperado: (11) 99999-0000",
-        type: "danger",
-      });
-      return;
-    }
+    const okName = validateField("name", name);
+    const okPhone = validateField("phone", phone);
+    if (!okName || !okPhone) return;
+    setErrors((prev) => ({ ...prev, name: undefined, phone: undefined }));
     setStep(1);
   };
 
   const handleRegister = async () => {
-    if (!email || !password) {
-      showMessage({
-        message: "Complete seus dados",
-        description: "Preencha Email e Senha.",
-        type: "warning",
+    const okEmail = validateField("email", email);
+    const okPwd = validateField("password", password);
+    if (!okEmail || !okPwd) return;
+
+    try {
+      setLoading(true);
+
+      await cadastro({
+        nomeUser: name,
+        phone: normalizePhone(phone),
+        email,
+        password,
       });
-      return;
-    }
-    if (!validateEmail(email)) {
+
+      console.log("Cadastro realizado com sucesso!");
+
+      const userData = { name, phone: normalizePhone(phone), email };
+      await AsyncStorage.setItem("userData", JSON.stringify(userData));
+
+      console.log("DADOS SALVOS:", userData);
       showMessage({
-        message: "Email inválido",
-        description: "Digite um email válido.",
-        type: "danger",
+        message: "Sucesso",
+        description: "Cadastro realizado com sucesso.",
+        type: "success",
       });
-      return;
+
+      setName("");
+      setPhone("");
+      setEmail("");
+      setPassword("");
+      setErrors({});
+      navigation.navigate("Login");
+    } catch (error: any) {
+      const serverMsg =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        "Ocorreu um erro ao realizar o cadastro.";
+      showMessage({ message: "Erro", description: serverMsg, type: "danger" });
+    } finally {
+      setLoading(false);
     }
-
-    const userData = { name, phone, email, password };
-    await AsyncStorage.setItem("userData", JSON.stringify(userData));
-
-    showMessage({
-      message: "Sucesso",
-      description: "Cadastro realizado com sucesso.",
-      type: "success",
-    });
-
-    setName("");
-    setPhone("");
-    setEmail("");
-    setPassword("");
-    navigation.navigate("Login");
   };
 
   const Stepper = ({ current }: { current: 0 | 1 }) => {
@@ -160,29 +215,51 @@ export default function Register() {
             </Text>
           </View>
 
-          {/* Card */}
           <View style={styles.card}>
             <Stepper current={step} />
 
-            {/* Conteúdo por etapa */}
             {step === 0 ? (
               <View style={styles.formArea}>
                 <InputField
                   placeholder="Nome"
                   value={name}
-                  onChangeText={setName}
+                  onChangeText={(v) => {
+                    setName(v);
+                    if (errors.name) validateField("name", v);
+                  }}
+                  onBlur={() => validateField("name", name)}
+                  autoCapitalize="words"
                   style={styles.input}
                 />
+                {!!errors.name && (
+                  <Text style={styles.errorText}>{errors.name}</Text>
+                )}
+
                 <InputField
                   placeholder="Telefone"
                   value={phone}
                   keyboardType="phone-pad"
-                  onChangeText={setPhone}
+                  onChangeText={(v) => {
+                    setPhone(v);
+                    if (errors.phone) validateField("phone", v);
+                  }}
+                  onBlur={() => validateField("phone", phone)}
                   style={styles.input}
                 />
+                {!!errors.phone && (
+                  <Text style={styles.errorText}>{errors.phone}</Text>
+                )}
 
-                <TouchableOpacity style={styles.primaryButton} onPress={goNext}>
-                  <Text style={styles.primaryText}>Continuar</Text>
+                <TouchableOpacity
+                  style={[styles.primaryButton, loading && { opacity: 0.7 }]}
+                  onPress={goNext}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <Text style={styles.primaryText}>Continuar</Text>
+                  )}
                 </TouchableOpacity>
               </View>
             ) : (
@@ -190,32 +267,53 @@ export default function Register() {
                 <InputField
                   placeholder="Email"
                   value={email}
-                  onChangeText={setEmail}
+                  onChangeText={(v) => {
+                    setEmail(v);
+                    if (errors.email) validateField("email", v);
+                  }}
+                  onBlur={() => validateField("email", email)}
                   keyboardType="email-address"
                   autoCapitalize="none"
                   style={styles.input}
                 />
+                {!!errors.email && (
+                  <Text style={styles.errorText}>{errors.email}</Text>
+                )}
+
                 <InputField
                   placeholder="Senha"
                   secureTextEntry
                   value={password}
-                  onChangeText={setPassword}
+                  onChangeText={(v) => {
+                    setPassword(v);
+                    if (errors.password) validateField("password", v);
+                  }}
+                  onBlur={() => validateField("password", password)}
                   style={styles.input}
                 />
+                {!!errors.password && (
+                  <Text style={styles.errorText}>{errors.password}</Text>
+                )}
 
                 <View style={styles.buttonsRow}>
                   <TouchableOpacity
                     style={styles.secondaryButton}
                     onPress={() => setStep(0)}
+                    disabled={loading}
                   >
                     <Text style={styles.secondaryText}>Voltar</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={styles.primaryButton}
+                    style={[styles.primaryButton, loading && { opacity: 0.7 }]}
                     onPress={handleRegister}
+                    disabled={loading}
                   >
-                    <Text style={styles.primaryText}>Cadastre-se</Text>
+                    {loading ? (
+                      <ActivityIndicator color="#fff" />
+                    ) : (
+                      <Text style={styles.primaryText}>Cadastre-se</Text>
+                    )}
                   </TouchableOpacity>
                 </View>
               </View>
@@ -232,30 +330,26 @@ export default function Register() {
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    justifyContent: "center",
+  background: { flex: 1, justifyContent: "center" },
+  errorText: {
+    marginTop: 2,
+    color: "#E53935",
+    fontSize: 12,
+    fontWeight: "600",
   },
   container: {
     paddingHorizontal: 20,
     paddingBottom: 32,
     justifyContent: "center",
   },
-  hero: {
-    marginTop: 120,
-    alignItems: "center",
-    marginBottom: 100,
-  },
+  hero: { marginTop: 120, alignItems: "center", marginBottom: 100 },
   title: {
     textAlign: "center",
     color: "#fff",
     fontSize: 36,
     letterSpacing: 0.3,
   },
-  titleHighlight: {
-    color: "#34c43d",
-    fontWeight: "900",
-  },
+  titleHighlight: { color: "#34c43d", fontWeight: "900" },
   subtitle: {
     textAlign: "center",
     color: "#fff",
@@ -263,11 +357,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     opacity: 0.9,
   },
-  card: {
-    marginTop: 28,
-    borderRadius: 16,
-    padding: 16,
-  },
+  card: { marginTop: 28, borderRadius: 16, padding: 16 },
   stepper: {
     marginBottom: 10,
     paddingTop: 6,
@@ -287,22 +377,9 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderRadius: 2,
   },
-  stepLineBg: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-  },
-  stepLineFg: {
-    height: "100%",
-    backgroundColor: "#2E9936",
-    borderRadius: 2,
-  },
-  stepItem: {
-    alignItems: "center",
-    width: "50%",
-  },
+  stepLineBg: { position: "absolute", left: 0, right: 0, top: 0, bottom: 0 },
+  stepLineFg: { height: "100%", backgroundColor: "#2E9936", borderRadius: 2 },
+  stepItem: { alignItems: "center", width: "50%" },
   stepDot: {
     width: 36,
     height: 36,
@@ -320,10 +397,7 @@ const styles = StyleSheet.create({
   stepLabel: { marginTop: 6, color: "#fff", fontWeight: "600" },
   stepLabelActive: { color: "#2c8f31" },
   formArea: { paddingTop: 8 },
-  input: {
-    marginBottom: 12,
-    borderRadius: 12,
-  },
+  input: { marginBottom: 12, borderRadius: 12 },
   buttonsRow: {
     flexDirection: "row",
     gap: 12,

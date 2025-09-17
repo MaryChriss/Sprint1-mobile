@@ -12,11 +12,30 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showMessage } from "react-native-flash-message";
 import InputField from "../components/InputField";
+import * as Linking from "expo-linking";
+import * as WebBrowser from "expo-web-browser";
+import { Button } from "react-native";
 
 export default function Login() {
   const navigation = useNavigation<any>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  async function loginWithGitHub() {
+    const result = await WebBrowser.openAuthSessionAsync(
+      "https://futurestack-java.onrender.com/oauth2/authorization/github",
+      "futurestack://oauth-callback"
+    );
+
+    if (result.type === "success" && result.url) {
+      const token = Linking.parse(result.url).queryParams?.token;
+      if (typeof token === "string") {
+        console.log("JWT:", token);
+        await AsyncStorage.setItem("jwt", token);
+        navigation.replace("MainTabs");
+      }
+    }
+  }
 
   useEffect(() => {
     const loadSavedData = async () => {
@@ -87,7 +106,7 @@ export default function Login() {
             />
           </View>
 
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <TouchableOpacity style={styles.button} onPress={loginWithGitHub}>
             <Text style={styles.buttonText}>Entrar</Text>
           </TouchableOpacity>
 
