@@ -8,18 +8,16 @@ import React from "react";
 
 export default function Home() {
   const navigation = useNavigation();
-  const [filialSelecionada, setFilialSelecionada] = React.useState<
-    string | null
-  >(null);
+  const [patioId, setPatioId] = React.useState<number | null>(null);
 
   return (
     <View style={styles.container}>
       <Header />
 
-      <Dropdown onSelect={(item) => setFilialSelecionada(item)} />
+      <Dropdown onSelect={(id) => setPatioId(id)} />
       <View style={{ margin: 10 }}>
         <Text style={styles.filialTitle}>Mapa de Vagas:</Text>
-        <MapaMotos />
+        <MapaMotos patioId={patioId} />
       </View>
 
       <TouchableOpacity

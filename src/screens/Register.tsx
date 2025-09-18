@@ -114,11 +114,6 @@ export default function Register() {
       await AsyncStorage.setItem("userData", JSON.stringify(userData));
 
       console.log("DADOS SALVOS:", userData);
-      showMessage({
-        message: "Sucesso",
-        description: "Cadastro realizado com sucesso.",
-        type: "success",
-      });
 
       setName("");
       setPhone("");

@@ -15,27 +15,12 @@ import InputField from "../components/InputField";
 import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
 import { Button } from "react-native";
+import { login } from "../services/rotes";
 
 export default function Login() {
   const navigation = useNavigation<any>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  async function loginWithGitHub() {
-    const result = await WebBrowser.openAuthSessionAsync(
-      "https://futurestack-java.onrender.com/oauth2/authorization/github",
-      "futurestack://oauth-callback"
-    );
-
-    if (result.type === "success" && result.url) {
-      const token = Linking.parse(result.url).queryParams?.token;
-      if (typeof token === "string") {
-        console.log("JWT:", token);
-        await AsyncStorage.setItem("jwt", token);
-        navigation.replace("MainTabs");
-      }
-    }
-  }
 
   useEffect(() => {
     const loadSavedData = async () => {
@@ -49,27 +34,38 @@ export default function Login() {
     loadSavedData();
   }, []);
 
-  const handleLogin = async () => {
-    const data = await AsyncStorage.getItem("userData");
-    if (data) {
-      const user = JSON.parse(data);
-      if (user.email === email && user.password === password) {
-        navigation.replace("MainTabs");
-      } else {
-        showMessage({
-          message: "Erro",
-          description: "Email ou senha incorretos.",
-          type: "danger",
-        });
-      }
+ const handleLogin = async () => {
+  if (!email || !password) {
+    showMessage({
+      message: "Erro",
+      description: "Preencha email e senha.",
+      type: "danger",
+    });
+    return;
+  }
+
+  try {
+    const response = await login({
+      email,
+      password,
+    });
+
+    const token = response.token;
+    console.log("Login realizado com sucesso!");
+     if (token) {
+      await AsyncStorage.setItem("token", token);
+      console.log("Token salvo:", token);
+
+      navigation.replace("MainTabs");
     } else {
-      showMessage({
-        message: "Erro",
-        description: "Nenhum usuário cadastrado.",
-        type: "danger",
-      });
+      throw new Error("Token não retornado pelo servidor");
     }
-  };
+
+    navigation.replace("MainTabs");
+  } catch (error) {
+    console.error("Erro no login:", error);
+  }
+};
 
   return (
     <ImageBackground
@@ -106,7 +102,7 @@ export default function Login() {
             />
           </View>
 
-          <TouchableOpacity style={styles.button} onPress={loginWithGitHub}>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>Entrar</Text>
           </TouchableOpacity>
 

@@ -1,28 +1,41 @@
 import { List } from "react-native-paper";
 import { StyleSheet, Text, View } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRoute } from "@react-navigation/native";
+import { listPatios } from "../services/rotes";
 
 export default function Dropdown({
   onSelect,
 }: {
-  onSelect?: (item: string) => void;
+  onSelect?: (id: number) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [selectedItem, setSelectedItem] = useState("Selecione uma filial");
+  const [patios, setpatios] = useState<{ id: number; nome: string}[]>([]);
 
-  const route = useRoute();
-  const handlePress = () => setExpanded(!expanded);
 
-  const handleSelect = (item: string) => {
-    setSelectedItem(item);
+  const handleSelect = (id: number, nome: string) => {
+    setSelectedItem(nome);
     setExpanded(false);
     if (onSelect) {
-      onSelect(item);
+      onSelect(id);
     }
   };
 
+  useEffect(() => {
+    const patios = async () => {
+      try {
+        const response = await listPatios();
+        setpatios(response);
+      } catch (e) {
+        console.error(e)
+      }
+    };
+
+    patios();
+  }, []);
+  
   return (
     <View style={styles.wrapper}>
       <Text style={styles.filialTitle}>Filial selecionada:</Text>
@@ -38,24 +51,15 @@ export default function Dropdown({
             <Entypo {...props} name="dot-single" size={24} color="white" />
           )}
         >
-          <List.Item
-            title="Paulista"
-            onPress={() => handleSelect("Paulista")}
-            style={styles.item}
-            titleStyle={styles.itemTitle}
-          />
-          <List.Item
-            title="Santana"
-            onPress={() => handleSelect("Santana")}
-            style={styles.item}
-            titleStyle={styles.itemTitle}
-          />
-          <List.Item
-            title="Osasco"
-            onPress={() => handleSelect("Osasco")}
-            style={styles.item}
-            titleStyle={styles.itemTitle}
-          />
+          {patios.map((patio) => (
+            <List.Item
+              key={patio.id}
+              title={patio.nome}
+              onPress={() => handleSelect(patio.id, patio.nome)}
+              style={styles.item}
+              titleStyle={styles.itemTitle}
+            />
+          ))}
         </List.Accordion>
       </View>
     </View>

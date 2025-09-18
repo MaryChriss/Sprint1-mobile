@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
   Modal,
@@ -6,45 +6,69 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { scale, verticalScale, moderateScale } from "react-native-size-matters";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Divider } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { infospatios } from "../services/rotes";
 
-export default function MapaVagas() {
-  // ——— números (pode virar props depois) ———
-  const totalVagasPatio = 320;
-  const totalVagasManutencao = 12;
-  const totalMotos = 90;
-  const motosManutencao = 5;
-  const motosPatio = totalMotos - motosManutencao;
+export default function MapaVagas({patioId}: {patioId: number}) {
 
-  // ——— estado ———
+ const [ocupacao, setOcupacao] = useState<{
+    totalMotos: number;
+    motosZonaA: number;
+    motosZonaB: number;
+    totalVagas: number;
+  } | null>(null);
+
   const [modalVisible, setModalVisible] = useState(false);
 
-  // ——— dados memoizados (performance) ———
-  const motosZonaA = useMemo(
-    () =>
-      Array.from({ length: totalVagasPatio }, (_, i) => ({
-        id: i,
-        ocupada: i < motosPatio,
-      })),
-    [totalVagasPatio, motosPatio]
-  );
+  useEffect(() => {
+    const fetchOcupacao = async () => {
+      try {
+        const response = await infospatios(patioId);
+        const data = await response;
+        setOcupacao(data);
+      } catch (error) {
+        console.error("Erro ao buscar ocupação:", error);
+      }
+    };
 
-  const motosZonaB = useMemo(
-    () =>
-      Array.from({ length: totalVagasManutencao }, (_, i) => ({
-        id: i,
-        ocupada: i < motosManutencao,
-      })),
-    [totalVagasManutencao, motosManutencao]
-  );
+    if (patioId) {
+      fetchOcupacao();
+    }
+  }, [patioId]);
 
-  // preview enxuto p/ card compacto
-  const previewMotosA = useMemo(() => motosZonaA.slice(0, 48), [motosZonaA]);
-  const previewMotosB = useMemo(() => motosZonaB.slice(0, 12), [motosZonaB]);
+if (!ocupacao) {
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <ActivityIndicator size="large" color="#1a922e" />
+      <Text style={{ marginTop: 8 }}>Carregando mapa...</Text>
+    </View>
+  );
+}
+
+const totalVagasPatio = Math.floor(ocupacao.totalVagas / 2);
+const totalVagasManutencao = ocupacao.totalVagas - totalVagasPatio;
+
+const motosPatio = ocupacao.motosZonaA;
+const motosManutencao = ocupacao.motosZonaB;
+const totalMotos = ocupacao.totalMotos;
+
+const makeArray = (ocupadas: number, total: number) =>
+  Array.from({ length: total }, (_, i) => ({
+    id: i,
+    ocupada: i < ocupadas,
+  }));
+
+const motosZonaA = makeArray(motosPatio, totalVagasPatio);
+const motosZonaB = makeArray(motosManutencao, totalVagasManutencao);
+
+const previewMotosA = motosZonaA.slice(0, 20);
+const previewMotosB = motosZonaB.slice(0, 10);
+
 
   // ——— helpers ———
   const percent = (qtd: number, total: number) =>
