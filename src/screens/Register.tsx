@@ -46,9 +46,10 @@ export default function Register() {
 
   const validateEmail = (v: string) => /^\S+@\S+\.\S+$/.test(v.trim());
 
-  const validatePhone = (v: string) =>
-    /^(\(?\d{2}\)?\s?)?\d{4,5}-?\d{4}$/.test(v.trim());
-
+  const validatePhone = (v: string) => {
+    const onlyDigits = v.replace(/\D/g, "");
+    return /^(\d{10}|\d{11})$/.test(onlyDigits);
+  };
   const validateField = (
     field: "name" | "phone" | "email" | "password",
     value: string
@@ -83,8 +84,6 @@ export default function Register() {
     return !msg;
   };
 
-  const normalizePhone = (v: string) => v.replace(/\D/g, "");
-
   const goNext = () => {
     const okName = validateField("name", name);
     const okPhone = validateField("phone", phone);
@@ -101,16 +100,23 @@ export default function Register() {
     try {
       setLoading(true);
 
+      const phoneNumber = Number(phone.replace(/\D/g, "")); // <- limpa e converte
+      if (!Number.isFinite(phoneNumber)) {
+        setErrors((prev) => ({ ...prev, phone: "Telefone inválido." }));
+        setLoading(false);
+        return;
+      }
+
       await cadastro({
         nomeUser: name,
-        phone: normalizePhone(phone),
+        phone: phoneNumber,
         email,
         password,
       });
 
       console.log("Cadastro realizado com sucesso!");
 
-      const userData = { name, phone: normalizePhone(phone), email };
+      const userData = { name, phone, email };
       await AsyncStorage.setItem("userData", JSON.stringify(userData));
 
       console.log("DADOS SALVOS:", userData);

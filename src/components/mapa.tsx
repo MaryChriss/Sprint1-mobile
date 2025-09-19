@@ -14,24 +14,48 @@ import { Divider } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { infospatios } from "../services/rotes";
 
-export default function MapaVagas({patioId}: {patioId: number}) {
+type Props = {
+  patioId: number | null;
+  onError?: (msg: string) => void;
+};
 
- const [ocupacao, setOcupacao] = useState<{
+export default function MapaVagas({ patioId, onError }: Props) {
+  const [ocupacao, setOcupacao] = useState<{
     totalMotos: number;
     motosZonaA: number;
     motosZonaB: number;
     totalVagas: number;
   } | null>(null);
 
+  const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
+    if (patioId === null) return;
+
+    let alive = true;
+
     const fetchOcupacao = async () => {
       try {
+        setLoading(true);
+        setOcupacao(null);
+
         const response = await infospatios(patioId);
-        const data = await response;
-        setOcupacao(data);
+        const status = response.status;
+
+        if (status === 500) {
+          onError?.("Pátio não configurado.");
+          return;
+        }
+
+        if (alive) setOcupacao(response);
       } catch (error) {
+        const statusendpoint = (error as any)?.response?.status;
+        if (statusendpoint === 500) {
+          onError?.("Pátio não configurado.");
+          return;
+        }
+        onError?.("Erro ao carregar ocupação do pátio.");
         console.error("Erro ao buscar ocupação:", error);
       }
     };
@@ -41,34 +65,33 @@ export default function MapaVagas({patioId}: {patioId: number}) {
     }
   }, [patioId]);
 
-if (!ocupacao) {
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <ActivityIndicator size="large" color="#1a922e" />
-      <Text style={{ marginTop: 8 }}>Carregando mapa...</Text>
-    </View>
-  );
-}
+  if (!ocupacao) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="#1a922e" />
+        <Text style={{ marginTop: 8 }}>Carregando mapa...</Text>
+      </View>
+    );
+  }
 
-const totalVagasPatio = Math.floor(ocupacao.totalVagas / 2);
-const totalVagasManutencao = ocupacao.totalVagas - totalVagasPatio;
+  const totalVagasPatio = Math.floor(ocupacao.totalVagas / 2);
+  const totalVagasManutencao = ocupacao.totalVagas - totalVagasPatio;
 
-const motosPatio = ocupacao.motosZonaA;
-const motosManutencao = ocupacao.motosZonaB;
-const totalMotos = ocupacao.totalMotos;
+  const motosPatio = ocupacao.motosZonaA;
+  const motosManutencao = ocupacao.motosZonaB;
+  const totalMotos = ocupacao.totalMotos;
 
-const makeArray = (ocupadas: number, total: number) =>
-  Array.from({ length: total }, (_, i) => ({
-    id: i,
-    ocupada: i < ocupadas,
-  }));
+  const makeArray = (ocupadas: number, total: number) =>
+    Array.from({ length: total }, (_, i) => ({
+      id: i,
+      ocupada: i < ocupadas,
+    }));
 
-const motosZonaA = makeArray(motosPatio, totalVagasPatio);
-const motosZonaB = makeArray(motosManutencao, totalVagasManutencao);
+  const motosZonaA = makeArray(motosPatio, totalVagasPatio);
+  const motosZonaB = makeArray(motosManutencao, totalVagasManutencao);
 
-const previewMotosA = motosZonaA.slice(0, 20);
-const previewMotosB = motosZonaB.slice(0, 10);
-
+  const previewMotosA = motosZonaA.slice(0, 20);
+  const previewMotosB = motosZonaB.slice(0, 10);
 
   // ——— helpers ———
   const percent = (qtd: number, total: number) =>

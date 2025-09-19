@@ -5,48 +5,119 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import { scale, verticalScale, moderateScale } from "react-native-size-matters";
 import Header from "../components/header";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import CardVeiculo from "../components/card";
 import { useRoute } from "@react-navigation/native";
 import InputField from "../components/InputField";
+import { buscarMotosNoPatio } from "../services/rotes";
+
+type TipoZona = "A" | "B";
+
+type MotoDTO = {
+  id: number;
+  modelo: string;
+  placa: string;
+  tipoZona: TipoZona | null;
+  zonaId: number | null;
+  status: "ALUGADA" | "DISPONIVEL" | "MANUTENCAO";
+  patioId: number | null;
+};
+
+const useDebounced = (value: string, delay = 350) => {
+  const [v, setV] = useState(value);
+  useEffect(() => {
+    const id = setTimeout(() => setV(value), delay);
+    return () => clearTimeout(id);
+  }, [value, delay]);
+  return v;
+};
 
 export default function Search() {
   const route = useRoute();
-  const { filial } = route.params as { filial: string | null };
+  const { patioId } = route.params as { patioId: string | null };
 
-  const motos = [
-    { placa: "ABC1D23", local: "Zona 02" },
-    { placa: "JKL4M56", local: "Zona 02" },
-    { placa: "MNB3V12", local: "Zona 02" },
-    { placa: "LSN4I49", local: "Zona 02" },
-    { placa: "PLM1A45", local: "Zona 02" },
-  ];
+  const [zonaSelecionada, setZonaSelecionada] = useState<TipoZona | "">("");
+  const [placa, setPlaca] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [lista, setLista] = useState<MotoDTO[]>([]);
+  const [erro, setErro] = useState<string | null>(null);
 
-  const zonasOpcoes = [
-    { label: "zona A", value: "zona A" },
-    { label: "zona B", value: "zona B" },
-  ];
+  const placaDebounced = useDebounced(placa, 350);
 
-  const [zonaSelecionada, setZonaSelecionada] = useState(null);
+  const zonasOpcoes = useMemo(
+    () => [
+      { label: "zona A", value: "A" },
+      { label: "zona B", value: "B" },
+    ],
+    []
+  );
+
   const [text, setText] = useState("");
+
+  useEffect(() => {
+    let alive = true;
+
+    const run = async () => {
+      setErro(null);
+      setLista([]);
+      if (patioId == null) return;
+
+      const params: any = {};
+      if (placaDebounced.trim())
+        params.placa = placaDebounced.trim().toUpperCase();
+      if (zonaSelecionada) params.tipoZona = zonaSelecionada;
+
+      try {
+        setLoading(true);
+        const page = await buscarMotosNoPatio(Number(patioId), params);
+        if (!alive) return;
+        setLista(page.content ?? []);
+      } catch (e: any) {
+        if (!alive) return;
+        setErro(e?.response?.data?.message || "Erro ao buscar motos.");
+      } finally {
+        if (alive) setLoading(false);
+      }
+    };
+    run();
+    return () => {
+      alive = false;
+    };
+  }, [patioId, placaDebounced, zonaSelecionada]);
+
+  if (patioId == null) {
+    return (
+      <View
+        style={[
+          styles.container,
+          { justifyContent: "center", alignItems: "center" },
+        ]}
+      >
+        <Text style={{ fontSize: 16, fontWeight: "600" }}>
+          Nenhum pátio selecionado. Volte e selecione um pátio.
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titlePrinc}>
-        {filial ?? "nenhuma filial selecionada"}
-      </Text>
+      <Text style={styles.titlePrinc}>Buscar motos</Text>
 
       <View style={styles.linha}>
         <Text style={styles.placaLabel}>Placa:</Text>
         <View style={styles.inputWrapper}>
           <InputField
             style={styles.input}
-            value={text}
-            onChangeText={setText}
+            value={placa}
+            onChangeText={setPlaca}
+            autoCapitalize="characters"
+            placeholder="ABC1D23"
           />
         </View>
       </View>
@@ -61,16 +132,37 @@ export default function Search() {
             valueField="value"
             placeholder=""
             value={zonaSelecionada}
-            onChange={(item) => setZonaSelecionada(item.value)}
+            onChange={(item) => setZonaSelecionada(item.value as TipoZona)}
           />
         </View>
       </View>
 
-      <ScrollView style={{ marginTop: 20, padding: 15 }}>
-        {motos.map((item, index) => (
-          <CardVeiculo key={index} placa={item.placa} local={item.local} />
-        ))}
-      </ScrollView>
+      {loading ? (
+        <View style={{ marginTop: 20, alignItems: "center" }}>
+          <ActivityIndicator />
+          <Text style={{ marginTop: 8 }}>Buscando...</Text>
+        </View>
+      ) : erro ? (
+        <View style={{ marginTop: 20, alignItems: "center" }}>
+          <Text style={{ color: "#B00020" }}>{erro}</Text>
+        </View>
+      ) : (
+        <ScrollView style={{ marginTop: 20, padding: 15 }}>
+          {lista.length === 0 ? (
+            <Text style={{ textAlign: "center", color: "#666" }}>
+              Nenhum resultado para os filtros atuais.
+            </Text>
+          ) : (
+            lista.map((m) => (
+              <CardVeiculo
+                key={m.id}
+                placa={m.placa}
+                local={m.tipoZona ? `Zona ${m.tipoZona}` : "Sem zona"}
+              />
+            ))
+          )}
+        </ScrollView>
+      )}
     </View>
   );
 }
