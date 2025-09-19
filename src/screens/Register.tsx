@@ -100,7 +100,7 @@ export default function Register() {
     try {
       setLoading(true);
 
-      const phoneNumber = Number(phone.replace(/\D/g, "")); // <- limpa e converte
+      const phoneNumber = Number(phone.replace(/\D/g, ""));
       if (!Number.isFinite(phoneNumber)) {
         setErrors((prev) => ({ ...prev, phone: "Telefone inválido." }));
         setLoading(false);
@@ -228,9 +228,8 @@ export default function Register() {
                     setName(v);
                     if (errors.name) validateField("name", v);
                   }}
-                  onBlur={() => validateField("name", name)}
-                  autoCapitalize="words"
-                  style={styles.input}
+                  containerStyle={styles.glass}
+                  style={{}}
                 />
                 {!!errors.name && (
                   <Text style={styles.errorText}>{errors.name}</Text>
@@ -239,13 +238,12 @@ export default function Register() {
                 <InputField
                   placeholder="Telefone"
                   value={phone}
-                  keyboardType="phone-pad"
                   onChangeText={(v) => {
                     setPhone(v);
                     if (errors.phone) validateField("phone", v);
                   }}
-                  onBlur={() => validateField("phone", phone)}
-                  style={styles.input}
+                  containerStyle={styles.glass}
+                  style={{}}
                 />
                 {!!errors.phone && (
                   <Text style={styles.errorText}>{errors.phone}</Text>
@@ -272,29 +270,19 @@ export default function Register() {
                     setEmail(v);
                     if (errors.email) validateField("email", v);
                   }}
-                  onBlur={() => validateField("email", email)}
                   keyboardType="email-address"
                   autoCapitalize="none"
-                  style={styles.input}
+                  style={styles.glass}
                 />
-                {!!errors.email && (
-                  <Text style={styles.errorText}>{errors.email}</Text>
-                )}
-
                 <InputField
                   placeholder="Senha"
-                  secureTextEntry
                   value={password}
                   onChangeText={(v) => {
                     setPassword(v);
                     if (errors.password) validateField("password", v);
                   }}
-                  onBlur={() => validateField("password", password)}
-                  style={styles.input}
+                  containerStyle={styles.glass}
                 />
-                {!!errors.password && (
-                  <Text style={styles.errorText}>{errors.password}</Text>
-                )}
 
                 <View style={styles.buttonsRow}>
                   <TouchableOpacity
@@ -337,6 +325,13 @@ const styles = StyleSheet.create({
     color: "#E53935",
     fontSize: 12,
     fontWeight: "600",
+  },
+  glass: {
+    backgroundColor: "rgba(0,0,0,0.35)",
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.25)",
+    marginBottom: 12,
   },
   container: {
     paddingHorizontal: 20,

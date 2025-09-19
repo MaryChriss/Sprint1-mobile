@@ -2,44 +2,52 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Dropdown from "../components/dropdown";
 import Header from "../components/header";
 import MapaMotos from "../components/mapa";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useTheme } from "@react-navigation/native"; // ⬅️ useTheme
 import AntDesign from "@expo/vector-icons/AntDesign";
 import React from "react";
 
 export default function Home() {
   const navigation = useNavigation();
+  const { colors } = useTheme(); // ⬅️ tema
   const [patioId, setPatioId] = React.useState<number | null>(null);
   const [apiError, setApiError] = React.useState<string | null>(null);
 
   const handleSelectPatio = (id: number) => {
-    setApiError(null); // limpa mensagem quando troca de pátio
+    setApiError(null);
     setPatioId(id);
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Header />
 
       <Dropdown onSelect={handleSelectPatio} />
 
       <View style={{ margin: 10 }}>
-        <Text style={styles.filialTitle}>Mapa de Vagas:</Text>
+        <Text style={[styles.filialTitle, { color: colors.text }]}>
+          Mapa de Vagas:
+        </Text>
 
         {patioId == null ? (
           <View style={styles.placeholder}>
-            <Text style={styles.placeholderText}>
+            <Text style={[styles.placeholderText, { color: colors.text }]}>
               Nenhum pátio selecionado.
             </Text>
-            <Text style={styles.placeholderSub}>
+            <Text
+              style={[
+                styles.placeholderSub,
+                { color: colors.text, opacity: 0.6 },
+              ]}
+            >
               Selecione um pátio no topo para visualizar o mapa.
             </Text>
           </View>
         ) : apiError ? (
           <View style={styles.placeholder}>
-            <Text style={[styles.placeholderText, { color: "#721C24" }]}>
+            <Text style={[styles.placeholderText, { color: colors.primary }]}>
               {apiError}
             </Text>
-            <Text style={[styles.placeholderSub, { color: "#721C24" }]}>
+            <Text style={[styles.placeholderSub, { color: colors.primary }]}>
               Verifique a configuração do pátio ou tente novamente.
             </Text>
           </View>
@@ -49,12 +57,15 @@ export default function Home() {
       </View>
 
       <TouchableOpacity
-        style={styles.search}
+        style={[
+          styles.search,
+          { backgroundColor: colors.primary, shadowColor: colors.text },
+        ]}
         onPress={() =>
           navigation.navigate("Search" as never, { patioId } as never)
         }
       >
-        <AntDesign name="search1" size={24} color="black" />
+        <AntDesign name="search1" size={24} color="#fff" />
       </TouchableOpacity>
     </View>
   );
@@ -67,19 +78,17 @@ const styles = StyleSheet.create({
     marginTop: 150,
     marginLeft: 40,
   },
-  container: { flex: 1, backgroundColor: "#f2f2f7" },
+  container: { flex: 1 },
   search: {
     position: "absolute",
     bottom: 30,
     right: 20,
-    backgroundColor: "#1a922e",
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
     elevation: 5,
-    shadowColor: "#000",
     shadowOpacity: 0.3,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
@@ -92,6 +101,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 200,
   },
-  placeholderText: { fontSize: 16, fontWeight: "700", color: "#222" },
-  placeholderSub: { marginTop: 6, color: "#666", textAlign: "center" },
+  placeholderText: { fontSize: 16, fontWeight: "700" },
+  placeholderSub: { marginTop: 6, textAlign: "center" },
 });

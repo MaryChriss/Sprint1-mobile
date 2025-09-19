@@ -19,6 +19,14 @@ type PatioPayload = {
   metragemZonaB: number;
 };
 
+export type Patio = {
+  id: number;
+  nome: string;
+  quantidadeVagas: number;
+  metragemZonaA: number;
+  metragemZonaB: number;
+};
+
 export const login = async (payload: LoginPayload) => {
   const { data } = await api.post("/login", payload);
   return data;
@@ -59,4 +67,13 @@ export const buscarMotosNoPatio = async (
 export const postPatio = async (payload: PatioPayload) => {
   const { data } = await api.post("/patios", payload);
   return data;
+};
+
+export const putPatio = async (id: number, payload: PatioPayload) => {
+  const { data } = await api.put(`/patios/${id}`, payload);
+  return data;
+};
+
+export const deletePatio = async (id: number) => {
+  await api.delete(`/patios/${id}`);
 };

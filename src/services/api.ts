@@ -16,10 +16,8 @@ api.interceptors.request.use(async (config) => {
   const url = config.url || "";
   const isPublic = PUBLIC_PATHS.some((re) => re.test(url));
 
-  // se for público, não injeta Authorization
   if (isPublic) return config;
 
-  // se o caller já setou Authorization (mesmo undefined), não sobrescreve
   const hasAuthHeader =
     !!config.headers &&
     Object.prototype.hasOwnProperty.call(config.headers, "Authorization");

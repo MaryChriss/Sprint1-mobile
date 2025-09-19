@@ -12,9 +12,6 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showMessage } from "react-native-flash-message";
 import InputField from "../components/InputField";
-import * as Linking from "expo-linking";
-import * as WebBrowser from "expo-web-browser";
-import { Button } from "react-native";
 import { login } from "../services/rotes";
 
 export default function Login() {
@@ -34,38 +31,38 @@ export default function Login() {
     loadSavedData();
   }, []);
 
- const handleLogin = async () => {
-  if (!email || !password) {
-    showMessage({
-      message: "Erro",
-      description: "Preencha email e senha.",
-      type: "danger",
-    });
-    return;
-  }
-
-  try {
-    const response = await login({
-      email,
-      password,
-    });
-
-    const token = response.token;
-    console.log("Login realizado com sucesso!");
-     if (token) {
-      await AsyncStorage.setItem("token", token);
-      console.log("Token salvo:", token);
-
-      navigation.replace("MainTabs");
-    } else {
-      throw new Error("Token não retornado pelo servidor");
+  const handleLogin = async () => {
+    if (!email || !password) {
+      showMessage({
+        message: "Erro",
+        description: "Preencha email e senha.",
+        type: "danger",
+      });
+      return;
     }
 
-    navigation.replace("MainTabs");
-  } catch (error) {
-    console.error("Erro no login:", error);
-  }
-};
+    try {
+      const response = await login({
+        email,
+        password,
+      });
+
+      const token = response.token;
+      console.log("Login realizado com sucesso!");
+      if (token) {
+        await AsyncStorage.setItem("token", token);
+        console.log("Token salvo:", token);
+
+        navigation.replace("MainTabs");
+      } else {
+        throw new Error("Token não retornado pelo servidor");
+      }
+
+      navigation.replace("MainTabs");
+    } catch (error) {
+      console.error("Erro no login:", error);
+    }
+  };
 
   return (
     <ImageBackground
@@ -91,14 +88,14 @@ export default function Login() {
               placeholder="Email"
               value={email}
               onChangeText={setEmail}
-              style={styles.input}
+              containerStyle={styles.glass}
             />
             <InputField
               placeholder="Senha"
-              secureTextEntry
               value={password}
               onChangeText={setPassword}
-              style={styles.input}
+              secureTextEntry
+              containerStyle={styles.glass}
             />
           </View>
 
@@ -130,6 +127,13 @@ const styles = StyleSheet.create({
   },
   containerPhases: {
     marginTop: -150,
+  },
+  glass: {
+    backgroundColor: "rgba(0,0,0,0.35)",
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.25)",
+    marginBottom: 12,
   },
   title: {
     textAlign: "center",
