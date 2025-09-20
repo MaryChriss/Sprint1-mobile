@@ -13,24 +13,27 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { scale, verticalScale, moderateScale } from "react-native-size-matters";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { putUser } from "../services/rotes";
 
 type UserData = {
-  name: string;
+  idUser: number; 
+  nomeUser: string;
   email: string;
   phone: string;
-  language: string;
-  theme: string;
+  language?: string;
+  theme?: string;
 };
 
 export default function Profile() {
-  const { colors } = useTheme(); // ⬅️ tema
-  const [name, setName] = useState("");
+  const { colors } = useTheme();
+  const [nomeUser, setnomeUser] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [language, setLanguage] = useState("");
   const [theme, setTheme] = useState("");
   const [editing, setEditing] = useState(false);
   const navigation = useNavigation<any>();
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -38,7 +41,7 @@ export default function Profile() {
         const raw = await AsyncStorage.getItem("userData");
         if (raw) {
           const u: Partial<UserData> = JSON.parse(raw);
-          if (u.name) setName(u.name);
+          if (u.nomeUser) setnomeUser(u.nomeUser);
           if (u.email) setEmail(u.email);
           if (u.phone) setPhone(u.phone);
           if (u.language) setLanguage(u.language);
@@ -50,24 +53,49 @@ export default function Profile() {
     })();
   }, []);
 
-  const saveUserData = async (override?: Partial<UserData>) => {
-    const data: UserData = { name, email, phone, language, theme, ...override };
-    await AsyncStorage.setItem("userData", JSON.stringify(data));
-  };
 
-  async function handleSave() {
-    try {
-      await saveUserData();
-      setEditing(false);
-      Alert.alert(
-        "Perfil atualizado",
-        "Suas informações foram salvas com sucesso."
-      );
-    } catch {
-      Alert.alert("Erro", "Não foi possível salvar suas informações.");
-    }
+
+const saveUserData = async (data: UserData) => {
+  await AsyncStorage.setItem("userData", JSON.stringify(data));
+};
+
+
+async function handleSave() {
+  try {
+    const raw = await AsyncStorage.getItem("userData");
+    if (!raw) throw new Error("Usuário não encontrado no storage");
+
+    const stored: UserData = JSON.parse(raw);
+
+    const payload = {
+      email,
+      nomeUser,
+      phone,
+    };
+
+    const updated = await putUser(stored.idUser, payload);
+
+    // atualiza storage
+    await saveUserData(updated);
+
+    // atualiza estado local
+    setnomeUser(updated.nomeUser);
+    setEmail(updated.email);
+    setPhone(updated.phone);
+
+    setEditing(false);
+    Alert.alert("Perfil atualizado", "Suas informações foram salvas com sucesso.");
+  } catch (e: any) {
+  console.error("Erro ao atualizar perfil:", e);
+
+  const msg = e?.response?.data || e?.message || "";
+  if (msg.includes("duplicate key value") || msg.includes("usuario_email_key")) {
+    setEmailError("Este e-mail já está em uso.");
+  } else {
+    Alert.alert("Erro", "Não foi possível salvar suas informações.");
   }
-
+}
+}
   const goToSettings = () => {
     navigation.navigate(
       "Themes" as never,
@@ -154,7 +182,7 @@ export default function Profile() {
               style={[styles.avatarCircle, { backgroundColor: colors.primary }]}
             >
               <Text style={styles.avatarLetter}>
-                {name ? name.charAt(0).toUpperCase() : "?"}
+                {nomeUser ? nomeUser.charAt(0).toUpperCase() : "?"}
               </Text>
             </View>
           </View>
@@ -166,8 +194,8 @@ export default function Profile() {
             </Text>
             {editing ? (
               <TextInput
-                value={name}
-                onChangeText={setName}
+                value={nomeUser}
+                onChangeText={setnomeUser}
                 style={[
                   styles.input,
                   {
@@ -180,40 +208,46 @@ export default function Profile() {
                 placeholderTextColor={colors.text + "99"}
               />
             ) : (
-              <Text style={[styles.value, { color: colors.text }]}>{name}</Text>
+              <Text style={[styles.value, { color: colors.text }]}>{nomeUser}</Text>
             )}
           </View>
 
-          {/* Email */}
           <View style={styles.field}>
-            <Text style={[styles.label, { color: colors.text, opacity: 0.7 }]}>
-              Email
-            </Text>
-            {editing ? (
-              <TextInput
-                value={email}
-                onChangeText={setEmail}
-                style={[
-                  styles.input,
-                  {
-                    color: colors.text,
-                    backgroundColor: colors.card,
-                    borderColor: colors.border,
-                  },
-                ]}
-                placeholder="seu@email.com"
-                placeholderTextColor={colors.text + "99"}
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            ) : (
-              <Text style={[styles.value, { color: colors.text }]}>
-                {email}
-              </Text>
-            )}
-          </View>
+  <Text style={[styles.label, { color: colors.text, opacity: 0.7 }]}>
+    Email
+  </Text>
+  {editing ? (
+    <>
+      <TextInput
+        value={email}
+        onChangeText={(text) => {
+          setEmail(text);
+          setEmailError(null);
+        }}
+        style={[
+          styles.input,
+          {
+            color: colors.text,
+            backgroundColor: colors.card,
+            borderColor: emailError ? "red" : colors.border,
+          },
+        ]}
+        placeholder="seu@email.com"
+        placeholderTextColor={colors.text + "99"}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      {emailError && (
+        <Text style={{ color: "red", fontSize: 12, marginTop: 4 }}>
+          {emailError}
+        </Text>
+      )}
+    </>
+  ) : (
+    <Text style={[styles.value, { color: colors.text }]}>{email}</Text>
+  )}
+</View>
 
-          {/* Telefone */}
           <View style={styles.field}>
             <Text style={[styles.label, { color: colors.text, opacity: 0.7 }]}>
               Telefone
@@ -263,7 +297,6 @@ export default function Profile() {
                   { color: colors.text, opacity: 0.6 },
                 ]}
               >
-                {language} • {theme}
               </Text>
               <Icon name="chevron-right" size={scale(20)} color={colors.text} />
             </View>

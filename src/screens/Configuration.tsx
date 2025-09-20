@@ -87,9 +87,9 @@ export default function PatioManagement() {
       next.quantidadeVagas = "Quantidade de vagas mínima é 60.";
     }
     if (!Number.isFinite(a) || a <= 0)
-      next.metragemZonaA = "Metragem A inválida (use número > 0).";
+      next.metragemZonaA = "Metragem A inválida";
     if (!Number.isFinite(b) || b <= 0)
-      next.metragemZonaB = "Metragem B inválida (use número > 0).";
+      next.metragemZonaB = "Metragem B inválida";
 
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -503,6 +503,67 @@ export default function PatioManagement() {
                     {errors.quantidadeVagas}
                   </Text>
                 )}
+
+                <InputField
+  label="Metragem Zona A"
+  value={metragemZonaA}
+  onChangeText={(v) => {
+    setMetragemZonaA(v);
+    if (errors.metragemZonaA)
+      setErrors((p) => ({ ...p, metragemZonaA: undefined }));
+  }}
+  placeholder="Ex: 120"
+  keyboardType="numeric"
+  style={{
+    marginBottom: 8,
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+  }}
+  textColor={colors.text}
+  placeholderTextColor={colors.text + "99"}
+  labelColor={colors.text}
+/>
+{!!errors.metragemZonaA && (
+  <Text
+    style={[
+      styles.errorText,
+      { color: dark ? "#FF8A80" : "#E53935" },
+    ]}
+  >
+    {errors.metragemZonaA}
+  </Text>
+)}
+
+<InputField
+  label="Metragem Zona B"
+  value={metragemZonaB}
+  onChangeText={(v) => {
+    setMetragemZonaB(v);
+    if (errors.metragemZonaB)
+      setErrors((p) => ({ ...p, metragemZonaB: undefined }));
+  }}
+  placeholder="Ex: 150"
+  keyboardType="numeric"
+  style={{
+    marginBottom: 8,
+    backgroundColor: colors.card,
+    borderColor: colors.border,
+  }}
+  textColor={colors.text}
+  placeholderTextColor={colors.text + "99"}
+  labelColor={colors.text}
+/>
+{!!errors.metragemZonaB && (
+  <Text
+    style={[
+      styles.errorText,
+      { color: dark ? "#FF8A80" : "#E53935" },
+    ]}
+  >
+    {errors.metragemZonaB}
+  </Text>
+)}
+
 
                 <View style={styles.formActions}>
                   <TouchableOpacity

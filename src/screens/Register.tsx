@@ -107,7 +107,7 @@ export default function Register() {
         return;
       }
 
-      await cadastro({
+      const response = await cadastro({
         nomeUser: name,
         phone: phoneNumber,
         email,
@@ -116,7 +116,12 @@ export default function Register() {
 
       console.log("Cadastro realizado com sucesso!");
 
-      const userData = { name, phone, email };
+      const userData ={
+        idUser: response.idUser,
+        nomeUser: response.nomeUser,
+        email: response.email,
+        phone: response.phone,
+      };
       await AsyncStorage.setItem("userData", JSON.stringify(userData));
 
       console.log("DADOS SALVOS:", userData);
@@ -327,7 +332,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   glass: {
-    backgroundColor: "rgba(0,0,0,0.35)",
+    backgroundColor: "rgba(219, 219, 219, 0.35)",
     borderRadius: 12,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.25)",

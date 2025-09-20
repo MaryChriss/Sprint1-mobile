@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     marginTop: -150,
   },
   glass: {
-    backgroundColor: "rgba(0,0,0,0.35)",
+    backgroundColor: "rgba(219, 219, 219, 0.35)",
     borderRadius: 12,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.25)",

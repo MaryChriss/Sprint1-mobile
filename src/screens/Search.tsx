@@ -113,14 +113,10 @@ export default function Search() {
         <Text style={[styles.placaLabel, { color: colors.text }]}>Placa:</Text>
         <View style={styles.inputWrapper}>
           <InputField
-            style={[
-              styles.input,
-              { backgroundColor: colors.card, borderColor: colors.border },
-            ]}
             value={placa}
             onChangeText={setPlaca}
             placeholder="ABC1D23"
-            label={""}
+            containerStyle={styles.glass}
           />
         </View>
       </View>
@@ -198,6 +194,13 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: verticalScale(20),
     marginBottom: verticalScale(-20),
+  },
+    glass: {
+    backgroundColor: "rgba(219, 219, 219, 0.35)",
+    borderRadius: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "rgba(255,255,255,0.25)",
+    marginBottom: 12,
   },
   zonasContainer: { gap: verticalScale(10), padding: scale(10) },
   zonaLinha: { flexDirection: "row", alignItems: "center" },

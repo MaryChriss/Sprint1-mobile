@@ -11,18 +11,11 @@ type Props = {
   keyboardType?: any;
   secureTextEntry?: boolean;
 
-  /** Estilo do WRAPPER (fora do TextInput) */
   containerStyle?: ViewStyle | ViewStyle[];
-
-  /** Estilo do TextInput (você já usa `style` nas telas) */
   style?: TextStyle | TextStyle[];
-
-  /** Overrides de cor (opcionais) */
   textColor?: string;
   placeholderTextColor?: string;
   labelColor?: string;
-
-  /** Demais props pass-through do Paper */
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
   autoCorrect?: boolean;
 };
@@ -46,7 +39,7 @@ export default function InputField({
 
   const finalTextColor = textColor ?? colors.text;
   const finalPlaceholder =
-    placeholderTextColor ?? (dark ? "#FFFFFF99" : "#00000066");
+    placeholderTextColor ?? (dark ? "#FFFFFF99" : "#20202066");
   const finalLabelColor = labelColor ?? colors.text;
 
   return (
@@ -58,15 +51,15 @@ export default function InputField({
       )}
 
       <TextInput
-        mode="flat" // sem outline
-        underlineColor="transparent" // sem linha
+        mode="flat"
+        underlineColor="transparent"
         selectionColor={colors.primary}
         cursorColor={colors.primary}
         textColor={finalTextColor}
         style={[
           styles.input,
           { color: finalTextColor, backgroundColor: "transparent" },
-          style, // <- usa o style que você já passa nas telas
+          style,
         ]}
         value={value}
         onChangeText={onChangeText}
@@ -92,7 +85,7 @@ export default function InputField({
 const styles = StyleSheet.create({
   box: {
     borderRadius: 12,
-    paddingHorizontal: 0, // deixe o padding para o containerStyle, quando precisar “glass”
+    paddingHorizontal: 0,
     paddingVertical: 0,
   },
   label: {

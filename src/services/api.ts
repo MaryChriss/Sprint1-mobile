@@ -10,7 +10,7 @@ export const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-const PUBLIC_PATHS = [/^\/login$/, /^\/users(\/.*)?$/];
+const PUBLIC_PATHS = [/^\/login$/, /^\/users$/];
 
 api.interceptors.request.use(async (config) => {
   const url = config.url || "";

@@ -1,10 +1,10 @@
 import { api } from "./api";
 
 type CadastroPayload = {
-  nomeUser: string;
-  phone: number;
-  email: string;
-  password: string;
+  nomeUser?: string;
+  phone?: number;
+  email?: string;
+  password?: string;
 };
 
 type LoginPayload = {
@@ -76,4 +76,9 @@ export const putPatio = async (id: number, payload: PatioPayload) => {
 
 export const deletePatio = async (id: number) => {
   await api.delete(`/patios/${id}`);
+};
+
+export const putUser = async (id: number, payload: CadastroPayload) => {
+  const { data } = await api.put(`/users/${id}`, payload);
+  return data;
 };
