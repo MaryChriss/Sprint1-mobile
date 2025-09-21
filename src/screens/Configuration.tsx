@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import {
   SafeAreaView,
@@ -505,65 +506,64 @@ export default function PatioManagement() {
                 )}
 
                 <InputField
-  label="Metragem Zona A"
-  value={metragemZonaA}
-  onChangeText={(v) => {
-    setMetragemZonaA(v);
-    if (errors.metragemZonaA)
-      setErrors((p) => ({ ...p, metragemZonaA: undefined }));
-  }}
-  placeholder="Ex: 120"
-  keyboardType="numeric"
-  style={{
-    marginBottom: 8,
-    backgroundColor: colors.card,
-    borderColor: colors.border,
-  }}
-  textColor={colors.text}
-  placeholderTextColor={colors.text + "99"}
-  labelColor={colors.text}
-/>
-{!!errors.metragemZonaA && (
-  <Text
-    style={[
-      styles.errorText,
-      { color: dark ? "#FF8A80" : "#E53935" },
-    ]}
-  >
-    {errors.metragemZonaA}
-  </Text>
-)}
+                  label="Metragem Zona A"
+                  value={metragemZonaA}
+                  onChangeText={(v) => {
+                    setMetragemZonaA(v);
+                    if (errors.metragemZonaA)
+                      setErrors((p) => ({ ...p, metragemZonaA: undefined }));
+                  }}
+                  placeholder="Ex: 120"
+                  keyboardType="numeric"
+                  style={{
+                    marginBottom: 8,
+                    backgroundColor: colors.card,
+                    borderColor: colors.border,
+                  }}
+                  textColor={colors.text}
+                  placeholderTextColor={colors.text + "99"}
+                  labelColor={colors.text}
+                />
+                {!!errors.metragemZonaA && (
+                  <Text
+                    style={[
+                      styles.errorText,
+                      { color: dark ? "#FF8A80" : "#E53935" },
+                    ]}
+                  >
+                    {errors.metragemZonaA}
+                  </Text>
+                )}
 
-<InputField
-  label="Metragem Zona B"
-  value={metragemZonaB}
-  onChangeText={(v) => {
-    setMetragemZonaB(v);
-    if (errors.metragemZonaB)
-      setErrors((p) => ({ ...p, metragemZonaB: undefined }));
-  }}
-  placeholder="Ex: 150"
-  keyboardType="numeric"
-  style={{
-    marginBottom: 8,
-    backgroundColor: colors.card,
-    borderColor: colors.border,
-  }}
-  textColor={colors.text}
-  placeholderTextColor={colors.text + "99"}
-  labelColor={colors.text}
-/>
-{!!errors.metragemZonaB && (
-  <Text
-    style={[
-      styles.errorText,
-      { color: dark ? "#FF8A80" : "#E53935" },
-    ]}
-  >
-    {errors.metragemZonaB}
-  </Text>
-)}
-
+                <InputField
+                  label="Metragem Zona B"
+                  value={metragemZonaB}
+                  onChangeText={(v) => {
+                    setMetragemZonaB(v);
+                    if (errors.metragemZonaB)
+                      setErrors((p) => ({ ...p, metragemZonaB: undefined }));
+                  }}
+                  placeholder="Ex: 150"
+                  keyboardType="numeric"
+                  style={{
+                    marginBottom: 8,
+                    backgroundColor: colors.card,
+                    borderColor: colors.border,
+                  }}
+                  textColor={colors.text}
+                  placeholderTextColor={colors.text + "99"}
+                  labelColor={colors.text}
+                />
+                {!!errors.metragemZonaB && (
+                  <Text
+                    style={[
+                      styles.errorText,
+                      { color: dark ? "#FF8A80" : "#E53935" },
+                    ]}
+                  >
+                    {errors.metragemZonaB}
+                  </Text>
+                )}
 
                 <View style={styles.formActions}>
                   <TouchableOpacity
@@ -574,16 +574,18 @@ export default function PatioManagement() {
                     ]}
                     onPress={handleSave}
                     disabled={loadingSave}
+                    accessibilityState={{
+                      disabled: loadingSave,
+                      busy: loadingSave,
+                    }}
                   >
-                    <Text style={styles.saveTxt}>
-                      {loadingSave
-                        ? isEditing
-                          ? "Atualizando..."
-                          : "Salvando..."
-                        : isEditing
-                        ? "Atualizar"
-                        : "Salvar"}
-                    </Text>
+                    {loadingSave ? (
+                      <ActivityIndicator size="small" />
+                    ) : (
+                      <Text style={styles.saveTxt}>
+                        {isEditing ? "Atualizar" : "Salvar"}
+                      </Text>
+                    )}
                   </TouchableOpacity>
                 </View>
               </View>
@@ -615,7 +617,6 @@ const styles = StyleSheet.create({
   bannerSuccess: { backgroundColor: "#E8F5E9" },
   bannerError: { backgroundColor: "#FDECEA" },
   bannerText: { color: "#111827", fontWeight: "700" },
-
   card: {
     borderRadius: 14,
     padding: 14,
@@ -642,7 +643,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#F3F4F6",
   },
   newBtnTxt: { fontWeight: "700", color: "#111" },
-
   input: { marginBottom: 8, backgroundColor: "#fff" },
   errorText: {
     color: "#E53935",
@@ -650,7 +650,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 6,
   },
-
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -668,7 +667,6 @@ const styles = StyleSheet.create({
   editBtn: { backgroundColor: "#E5F6FF" },
   deleteBtn: { backgroundColor: "#FDECEA" },
   actionTxt: { fontWeight: "700", color: "#111" },
-
   formActions: { flexDirection: "row", gap: 10, marginTop: 10 },
   saveBtn: {
     flex: 1,

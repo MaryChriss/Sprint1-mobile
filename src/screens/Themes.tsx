@@ -6,7 +6,6 @@ import SegmentedControl from "@react-native-segmented-control/segmented-control"
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Header from "../components/header";
-import InputField from "../components/InputField";
 import { AppContext } from "../../App";
 import { APP_COLORS } from "../colors/colors";
 
@@ -71,7 +70,6 @@ const Themes = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Card Tema */}
           <View
             style={[
               styles.card,
@@ -126,7 +124,6 @@ const styles = StyleSheet.create({
   safe: { flex: 1 },
   screen: { flex: 1 },
   content: { flex: 1, padding: 16 },
-
   titleRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -134,11 +131,9 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   title: { fontSize: 18, fontWeight: "800", textAlign: "left", flex: 1 },
-
   card: { borderRadius: 14, padding: 14, marginTop: 12 },
   cardHeader: { flexDirection: "row", alignItems: "center", marginBottom: 8 },
   cardTitle: { fontSize: 16, fontWeight: "700", flex: 1 },
-
   colorDot: {
     width: 14,
     height: 14,
@@ -147,7 +142,6 @@ const styles = StyleSheet.create({
   },
   sectionHelp: { fontSize: 12, marginBottom: 10 },
   segment: { marginBottom: 6 },
-
   btnGhost: { paddingVertical: 10, paddingHorizontal: 12, borderRadius: 12 },
   btnGhostTxt: { fontWeight: "800" },
 });

@@ -2,13 +2,13 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Dropdown from "../components/dropdown";
 import Header from "../components/header";
 import MapaMotos from "../components/mapa";
-import { useNavigation, useTheme } from "@react-navigation/native"; // ⬅️ useTheme
+import { useNavigation, useTheme } from "@react-navigation/native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import React from "react";
 
 export default function Home() {
   const navigation = useNavigation();
-  const { colors } = useTheme(); // ⬅️ tema
+  const { colors } = useTheme();
   const [patioId, setPatioId] = React.useState<number | null>(null);
   const [apiError, setApiError] = React.useState<string | null>(null);
 

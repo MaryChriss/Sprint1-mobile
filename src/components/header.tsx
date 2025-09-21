@@ -1,6 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation, useTheme } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Header() {
   const navigation = useNavigation<any>();
@@ -24,7 +25,19 @@ export default function Header() {
         <Text style={[styles.title, { color: colors.text }]}>Future Stack</Text>
       </View>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+      <TouchableOpacity
+        onPress={async () => {
+          try {
+            await AsyncStorage.multiRemove(["token", "userData"]);
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Login" as never }],
+            });
+          } catch (e) {
+            console.error("Erro no logout:", e);
+          }
+        }}
+      >
         <MaterialIcons name="logout" size={24} color={colors.primary} />
       </TouchableOpacity>
     </View>

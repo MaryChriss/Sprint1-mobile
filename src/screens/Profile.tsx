@@ -13,10 +13,10 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { scale, verticalScale, moderateScale } from "react-native-size-matters";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { putUser } from "../services/rotes";
+import { deleteUser, getUser, putUser } from "../services/rotes";
 
 type UserData = {
-  idUser: number; 
+  idUser: number;
   nomeUser: string;
   email: string;
   phone: string;
@@ -26,86 +26,115 @@ type UserData = {
 
 export default function Profile() {
   const { colors } = useTheme();
-  const [nomeUser, setnomeUser] = useState("");
+  const navigation = useNavigation<any>();
+
+  const [user, setUser] = useState<UserData | null>(null);
+  const [nomeUser, setNomeUser] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [language, setLanguage] = useState("");
   const [theme, setTheme] = useState("");
   const [editing, setEditing] = useState(false);
-  const navigation = useNavigation<any>();
   const [emailError, setEmailError] = useState<string | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(true);
 
   useEffect(() => {
     (async () => {
       try {
         const raw = await AsyncStorage.getItem("userData");
-        if (raw) {
-          const u: Partial<UserData> = JSON.parse(raw);
-          if (u.nomeUser) setnomeUser(u.nomeUser);
-          if (u.email) setEmail(u.email);
-          if (u.phone) setPhone(u.phone);
-          if (u.language) setLanguage(u.language);
-          if (u.theme) setTheme(u.theme);
+        const idFromStorage = raw ? JSON.parse(raw)?.idUser : null;
+
+        if (!idFromStorage) {
+          setLoadingProfile(false);
+          Alert.alert("Erro", "Não foi possível identificar o usuário logado.");
+          return;
         }
+
+        const apiUser = await getUser(idFromStorage);
+        setUser(apiUser);
+        setNomeUser(apiUser?.nomeUser ?? "");
+        setEmail(apiUser?.email ?? "");
+        setPhone(apiUser?.phone ?? "");
+        setLanguage(apiUser?.language ?? "");
+        setTheme(apiUser?.theme ?? "");
       } catch (e) {
-        console.warn("Falha ao carregar userData:", e);
+        console.warn("Falha ao carregar usuário pela API:", e);
+        Alert.alert("Erro", "Não foi possível carregar seus dados.");
+      } finally {
+        setLoadingProfile(false);
       }
     })();
   }, []);
 
+  async function handleSave() {
+    try {
+      if (!user) throw new Error("Usuário não carregado");
+      const payload = { email, nomeUser, phone };
 
+      await putUser(user.idUser, payload);
 
-const saveUserData = async (data: UserData) => {
-  await AsyncStorage.setItem("userData", JSON.stringify(data));
-};
+      const apiUser = await getUser(user.idUser);
+      setUser(apiUser);
+      setNomeUser(apiUser?.nomeUser ?? "");
+      setEmail(apiUser?.email ?? "");
+      setPhone(apiUser?.phone ?? "");
 
-
-async function handleSave() {
-  try {
-    const raw = await AsyncStorage.getItem("userData");
-    if (!raw) throw new Error("Usuário não encontrado no storage");
-
-    const stored: UserData = JSON.parse(raw);
-
-    const payload = {
-      email,
-      nomeUser,
-      phone,
-    };
-
-    const updated = await putUser(stored.idUser, payload);
-
-    // atualiza storage
-    await saveUserData(updated);
-
-    // atualiza estado local
-    setnomeUser(updated.nomeUser);
-    setEmail(updated.email);
-    setPhone(updated.phone);
-
-    setEditing(false);
-    Alert.alert("Perfil atualizado", "Suas informações foram salvas com sucesso.");
-  } catch (e: any) {
-  console.error("Erro ao atualizar perfil:", e);
-
-  const msg = e?.response?.data || e?.message || "";
-  if (msg.includes("duplicate key value") || msg.includes("usuario_email_key")) {
-    setEmailError("Este e-mail já está em uso.");
-  } else {
-    Alert.alert("Erro", "Não foi possível salvar suas informações.");
+      setEditing(false);
+      Alert.alert(
+        "Perfil atualizado",
+        "Suas informações foram salvas com sucesso."
+      );
+    } catch (e: any) {
+      console.error("Erro ao atualizar perfil:", e);
+      const msg = e?.response?.data || e?.message || "";
+      if (
+        msg.includes("duplicate key value") ||
+        msg.includes("usuario_email_key")
+      ) {
+        setEmailError("Este e-mail já está em uso.");
+      } else {
+        Alert.alert("Erro", "Não foi possível salvar suas informações.");
+      }
+    }
   }
-}
-}
+
+  function confirmDelete() {
+    if (!user) return;
+    Alert.alert(
+      "Excluir conta",
+      "Tem certeza que deseja excluir sua conta? Essa ação não pode ser desfeita.",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Excluir",
+          style: "destructive",
+          onPress: () => handleDeleteUser(user.idUser),
+        },
+      ]
+    );
+  }
+
+  async function handleDeleteUser(id: number) {
+    try {
+      await deleteUser(id);
+      await AsyncStorage.multiRemove(["token", "userData"]);
+      Alert.alert("Usuário excluído", "O usuário foi excluído com sucesso.");
+      navigation.navigate("Login" as never);
+    } catch (e) {
+      console.error("Erro ao excluir usuário:", e);
+      Alert.alert("Erro", "Não foi possível excluir o usuário.");
+    }
+  }
+
   const goToSettings = () => {
     navigation.navigate(
       "Themes" as never,
       {
         currentLanguage: language,
         currentTheme: theme,
-        onUpdate: async (next: { language?: string; theme?: string }) => {
+        onUpdate: (next: { language?: string; theme?: string }) => {
           if (next.language) setLanguage(next.language);
           if (next.theme) setTheme(next.theme);
-          await saveUserData(next);
         },
       } as never
     );
@@ -187,7 +216,6 @@ async function handleSave() {
             </View>
           </View>
 
-          {/* Nome */}
           <View style={styles.field}>
             <Text style={[styles.label, { color: colors.text, opacity: 0.7 }]}>
               Nome
@@ -195,7 +223,7 @@ async function handleSave() {
             {editing ? (
               <TextInput
                 value={nomeUser}
-                onChangeText={setnomeUser}
+                onChangeText={setNomeUser}
                 style={[
                   styles.input,
                   {
@@ -208,45 +236,49 @@ async function handleSave() {
                 placeholderTextColor={colors.text + "99"}
               />
             ) : (
-              <Text style={[styles.value, { color: colors.text }]}>{nomeUser}</Text>
+              <Text style={[styles.value, { color: colors.text }]}>
+                {nomeUser}
+              </Text>
             )}
           </View>
 
           <View style={styles.field}>
-  <Text style={[styles.label, { color: colors.text, opacity: 0.7 }]}>
-    Email
-  </Text>
-  {editing ? (
-    <>
-      <TextInput
-        value={email}
-        onChangeText={(text) => {
-          setEmail(text);
-          setEmailError(null);
-        }}
-        style={[
-          styles.input,
-          {
-            color: colors.text,
-            backgroundColor: colors.card,
-            borderColor: emailError ? "red" : colors.border,
-          },
-        ]}
-        placeholder="seu@email.com"
-        placeholderTextColor={colors.text + "99"}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      {emailError && (
-        <Text style={{ color: "red", fontSize: 12, marginTop: 4 }}>
-          {emailError}
-        </Text>
-      )}
-    </>
-  ) : (
-    <Text style={[styles.value, { color: colors.text }]}>{email}</Text>
-  )}
-</View>
+            <Text style={[styles.label, { color: colors.text, opacity: 0.7 }]}>
+              Email
+            </Text>
+            {editing ? (
+              <>
+                <TextInput
+                  value={email}
+                  onChangeText={(text) => {
+                    setEmail(text);
+                    setEmailError(null);
+                  }}
+                  style={[
+                    styles.input,
+                    {
+                      color: colors.text,
+                      backgroundColor: colors.card,
+                      borderColor: emailError ? "red" : colors.border,
+                    },
+                  ]}
+                  placeholder="seu@email.com"
+                  placeholderTextColor={colors.text + "99"}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+                {emailError && (
+                  <Text style={{ color: "red", fontSize: 12, marginTop: 4 }}>
+                    {emailError}
+                  </Text>
+                )}
+              </>
+            ) : (
+              <Text style={[styles.value, { color: colors.text }]}>
+                {email}
+              </Text>
+            )}
+          </View>
 
           <View style={styles.field}>
             <Text style={[styles.label, { color: colors.text, opacity: 0.7 }]}>
@@ -291,15 +323,18 @@ async function handleSave() {
               Configurações
             </Text>
             <View style={styles.actionRight}>
-              <Text
-                style={[
-                  styles.actionHint,
-                  { color: colors.text, opacity: 0.6 },
-                ]}
-              >
-              </Text>
               <Icon name="chevron-right" size={scale(20)} color={colors.text} />
             </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.actionBtn, { borderBottomColor: colors.border }]}
+            onPress={confirmDelete}
+          >
+            <Icon name="delete-outline" size={scale(18)} color={colors.text} />
+            <Text style={[styles.actionText, { color: colors.text }]}>
+              Excluir conta
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -330,7 +365,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: scale(6),
   },
-  actionHint: { fontSize: scale(12), fontWeight: "600" },
   headerRow: { flexDirection: "row", alignItems: "center" },
   title: { fontSize: scale(20), fontWeight: "800", flex: 1 },
   headerBtn: {

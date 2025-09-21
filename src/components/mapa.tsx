@@ -399,7 +399,6 @@ const styles = StyleSheet.create({
     borderRadius: moderateScale(6),
   },
   legendText: { fontSize: scale(12) },
-
   section: { gap: verticalScale(8) },
   sectionHeader: {
     flexDirection: "row",
@@ -410,7 +409,6 @@ const styles = StyleSheet.create({
   sectionStats: { flexDirection: "row", alignItems: "baseline", gap: scale(6) },
   stat: { fontSize: scale(14), fontWeight: "600" },
   statMuted: { fontSize: scale(13) },
-
   progressTrack: {
     width: "100%",
     height: verticalScale(8),
@@ -418,7 +416,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   progressFill: { height: "100%", borderRadius: moderateScale(8) },
-
   gridWrap: {
     width: "100%",
     alignSelf: "stretch",
@@ -426,7 +423,6 @@ const styles = StyleSheet.create({
   },
   grid: { flexDirection: "row", flexWrap: "wrap" },
   cell: { borderRadius: moderateScale(6) },
-
   modalRoot: { flex: 1 },
   modalHeader: {
     paddingTop: verticalScale(14),
@@ -439,7 +435,6 @@ const styles = StyleSheet.create({
   modalTitle: { fontSize: scale(18), fontWeight: "700", flex: 1 },
   modalClose: { padding: scale(8), borderRadius: moderateScale(8) },
   modalScroll: { padding: scale(16), gap: verticalScale(16) },
-
   card: {
     borderRadius: moderateScale(12),
     padding: scale(16),

@@ -116,7 +116,7 @@ export default function Register() {
 
       console.log("Cadastro realizado com sucesso!");
 
-      const userData ={
+      const userData = {
         idUser: response.idUser,
         nomeUser: response.nomeUser,
         email: response.email,
@@ -279,6 +279,9 @@ export default function Register() {
                   autoCapitalize="none"
                   style={styles.glass}
                 />
+                {!!errors.email && (
+                  <Text style={styles.errorText}>{errors.email}</Text>
+                )}
                 <InputField
                   placeholder="Senha"
                   value={password}
@@ -286,8 +289,12 @@ export default function Register() {
                     setPassword(v);
                     if (errors.password) validateField("password", v);
                   }}
+                  secureTextEntry
                   containerStyle={styles.glass}
                 />
+                {!!errors.password && (
+                  <Text style={styles.errorText}>{errors.password}</Text>
+                )}
 
                 <View style={styles.buttonsRow}>
                   <TouchableOpacity

@@ -1,4 +1,33 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api } from "./api";
+import { resetToLogin } from "./RootNavigation";
+
+let redirecting = false;
+
+const PUBLIC_PATHS: RegExp[] = [/\/login$/, /\/users$/];
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const status = error?.response?.status;
+    const url = error?.config?.url || "";
+    const isPublic = PUBLIC_PATHS.some((re) => re.test(url));
+
+    if (status === 401 && !isPublic) {
+      try {
+        await AsyncStorage.multiRemove(["token", "userData"]);
+      } catch {}
+      if (!redirecting) {
+        redirecting = true;
+        setTimeout(() => {
+          resetToLogin();
+          redirecting = false;
+        }, 0);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 type CadastroPayload = {
   nomeUser?: string;
@@ -80,5 +109,14 @@ export const deletePatio = async (id: number) => {
 
 export const putUser = async (id: number, payload: CadastroPayload) => {
   const { data } = await api.put(`/users/${id}`, payload);
+  return data;
+};
+
+export const deleteUser = async (id: number) => {
+  await api.delete(`/users/${id}`);
+};
+
+export const getUser = async (id: number) => {
+  const { data } = await api.get(`/users/${id}`);
   return data;
 };

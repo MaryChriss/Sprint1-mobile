@@ -11,11 +11,11 @@ import MainTabs from "./src/components/MainTabs";
 import Login from "./src/screens/Login";
 import Register from "./src/screens/Register";
 import Profile from "./src/screens/Profile";
-import { APP_COLORS } from "./src/colors/colors";
 import { createContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Themes from "./src/screens/Themes";
+import { navigationRef } from "./src/services/RootNavigation";
 
 const Stack = createNativeStackNavigator();
 const queryClient = new QueryClient();
@@ -73,7 +73,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
         <AppContext.Provider value={{ value, setValue }}>
-          <NavigationContainer theme={themeObj}>
+          <NavigationContainer ref={navigationRef} theme={themeObj}>
             <Stack.Navigator>
               <Stack.Screen
                 name="MainTabs"
