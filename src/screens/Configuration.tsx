@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   FlatList,
@@ -38,6 +39,7 @@ type FieldErrors = {
 
 export default function PatioManagement() {
   const { colors, dark } = useTheme();
+  const { t } = useTranslation()
 
   const [patios, setPatios] = useState<Patio[]>([]);
   const [loadingList, setLoadingList] = useState(false);
@@ -211,32 +213,6 @@ export default function PatioManagement() {
     }
   };
 
-  const renderItem = ({ item }: { item: Patio }) => (
-    <View style={styles.row}>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.rowTitle}>{item.nome}</Text>
-        <Text style={styles.rowSub}>
-          Vagas: {item.quantidadeVagas} • A: {item.metragemZonaA} • B:{" "}
-          {item.metragemZonaB}
-        </Text>
-      </View>
-      <View style={styles.rowActions}>
-        <TouchableOpacity
-          style={[styles.actionBtn, styles.editBtn]}
-          onPress={() => fillForm(item)}
-        >
-          <Text style={styles.actionTxt}>Editar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.actionBtn, styles.deleteBtn]}
-          onPress={() => confirmDelete(item)}
-        >
-          <Text style={styles.actionTxt}>Excluir</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-
   return (
     <SafeAreaView
       style={[styles.safe, { backgroundColor: colors.background }]}
@@ -247,7 +223,7 @@ export default function PatioManagement() {
 
         <View style={styles.content}>
           <Text style={[styles.titlePrinc, { color: colors.text }]}>
-            Gerenciar Pátios
+             {t("gerencPatios")}
           </Text>
 
           {successMsg && (
@@ -305,7 +281,7 @@ export default function PatioManagement() {
             >
               <View style={styles.cardHeader}>
                 <Text style={[styles.cardTitle, { color: colors.text }]}>
-                  Pátios cadastrados
+                  {t("patCadas")}
                 </Text>
 
                 <TouchableOpacity
@@ -323,18 +299,18 @@ export default function PatioManagement() {
                   }}
                 >
                   <Text style={[styles.newBtnTxt, { color: colors.text }]}>
-                    Novo
+                    {t("new")}
                   </Text>
                 </TouchableOpacity>
               </View>
 
               {loadingList ? (
                 <Text style={{ color: colors.text, opacity: 0.7 }}>
-                  Carregando...
+                  {t("loading")}
                 </Text>
               ) : patios.length === 0 ? (
                 <Text style={{ color: colors.text, opacity: 0.7 }}>
-                  Nenhum pátio encontrado.
+                 {t("anyPat")}
                 </Text>
               ) : (
                 <FlatList
@@ -352,7 +328,7 @@ export default function PatioManagement() {
                             { color: colors.text, opacity: 0.7 },
                           ]}
                         >
-                          Vagas: {item.quantidadeVagas} • A:{" "}
+                          {t("vagas")}: {item.quantidadeVagas} • A:{" "}
                           {item.metragemZonaA} • B: {item.metragemZonaB}
                         </Text>
                       </View>
@@ -372,7 +348,7 @@ export default function PatioManagement() {
                           <Text
                             style={[styles.actionTxt, { color: colors.text }]}
                           >
-                            Editar
+                            {t("edit")}
                           </Text>
                         </TouchableOpacity>
 
@@ -390,7 +366,7 @@ export default function PatioManagement() {
                           <Text
                             style={[styles.actionTxt, { color: colors.text }]}
                           >
-                            Excluir
+                            {t("excluir")}
                           </Text>
                         </TouchableOpacity>
                       </View>
@@ -427,7 +403,7 @@ export default function PatioManagement() {
               >
                 <View style={styles.cardHeader}>
                   <Text style={[styles.cardTitle, { color: colors.text }]}>
-                    {isEditing ? "Editar Pátio" : "Novo Pátio"}
+                    {isEditing ? t("editPatio") : t("newPatio")}
                   </Text>
 
                   <TouchableOpacity
@@ -442,20 +418,20 @@ export default function PatioManagement() {
                     onPress={goToList}
                   >
                     <Text style={[styles.newBtnTxt, { color: colors.text }]}>
-                      Voltar
+                      {t("back")}
                     </Text>
                   </TouchableOpacity>
                 </View>
 
                 <InputField
-                  label="Nome da Filial"
+                  label={t("nomeFiliar")}
                   value={nome}
                   onChangeText={(v) => {
                     setNome(v);
                     if (errors.nome)
                       setErrors((p) => ({ ...p, nome: undefined }));
                   }}
-                  placeholder="Ex: Filial Centro"
+                  placeholder={t("exFili")}
                   style={{
                     marginBottom: 8,
                     backgroundColor: colors.card,
@@ -477,7 +453,7 @@ export default function PatioManagement() {
                 )}
 
                 <Counter
-                  label="Quantidade de Vagas"
+                  label={t("QntVagas")}
                   value={quantidadeVagas}
                   onIncrease={() => {
                     setQuantidadeVagas((q) => q + 1);
@@ -506,14 +482,14 @@ export default function PatioManagement() {
                 )}
 
                 <InputField
-                  label="Metragem Zona A"
+                  label={t("metZA")}
                   value={metragemZonaA}
                   onChangeText={(v) => {
                     setMetragemZonaA(v);
                     if (errors.metragemZonaA)
                       setErrors((p) => ({ ...p, metragemZonaA: undefined }));
                   }}
-                  placeholder="Ex: 120"
+                  placeholder="Ex: 420"
                   keyboardType="numeric"
                   style={{
                     marginBottom: 8,
@@ -536,14 +512,14 @@ export default function PatioManagement() {
                 )}
 
                 <InputField
-                  label="Metragem Zona B"
+                  label={t("metZB")}
                   value={metragemZonaB}
                   onChangeText={(v) => {
                     setMetragemZonaB(v);
                     if (errors.metragemZonaB)
                       setErrors((p) => ({ ...p, metragemZonaB: undefined }));
                   }}
-                  placeholder="Ex: 150"
+                  placeholder="Ex: 450"
                   keyboardType="numeric"
                   style={{
                     marginBottom: 8,
@@ -583,7 +559,7 @@ export default function PatioManagement() {
                       <ActivityIndicator size="small" />
                     ) : (
                       <Text style={styles.saveTxt}>
-                        {isEditing ? "Atualizar" : "Salvar"}
+                        {isEditing ? t("att") : t("save")}
                       </Text>
                     )}
                   </TouchableOpacity>

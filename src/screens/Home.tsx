@@ -5,13 +5,14 @@ import MapaMotos from "../components/mapa";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 export default function Home() {
   const navigation = useNavigation();
   const { colors } = useTheme();
   const [patioId, setPatioId] = React.useState<number | null>(null);
   const [apiError, setApiError] = React.useState<string | null>(null);
-
+  const { t } = useTranslation()
   const handleSelectPatio = (id: number) => {
     setApiError(null);
     setPatioId(id);
@@ -25,13 +26,13 @@ export default function Home() {
 
       <View style={{ margin: 10 }}>
         <Text style={[styles.filialTitle, { color: colors.text }]}>
-          Mapa de Vagas:
+           {t("mapVagas")}
         </Text>
 
         {patioId == null ? (
           <View style={styles.placeholder}>
             <Text style={[styles.placeholderText, { color: colors.text }]}>
-              Nenhum pátio selecionado.
+              {t("anyPatSelect")}
             </Text>
             <Text
               style={[
@@ -39,7 +40,7 @@ export default function Home() {
                 { color: colors.text, opacity: 0.6 },
               ]}
             >
-              Selecione um pátio no topo para visualizar o mapa.
+              {t("selectMap")}
             </Text>
           </View>
         ) : apiError ? (
@@ -48,7 +49,7 @@ export default function Home() {
               {apiError}
             </Text>
             <Text style={[styles.placeholderSub, { color: colors.primary }]}>
-              Verifique a configuração do pátio ou tente novamente.
+              {t("VerConfig")}
             </Text>
           </View>
         ) : (

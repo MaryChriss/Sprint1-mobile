@@ -10,15 +10,16 @@ import {
   TextInput,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { showMessage } from "react-native-flash-message";
 import InputField from "../components/InputField";
 import { login } from "../services/rotes";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
   const navigation = useNavigation<any>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const { t } = useTranslation()
+  
   useEffect(() => {
     const loadSavedData = async () => {
       const data = await AsyncStorage.getItem("userData");
@@ -33,11 +34,6 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      showMessage({
-        message: "Erro",
-        description: "Preencha email e senha.",
-        type: "danger",
-      });
       return;
     }
 
@@ -73,11 +69,11 @@ export default function Login() {
       <View style={styles.container}>
         <View style={styles.containerPhases}>
           <Text style={styles.title}>
-            Bem-vindo ao{"\n"}
-            <Text style={styles.titleHighlight}>Future Stack</Text>
+             {t("welcometo")}{"\n"}
+            <Text style={styles.titleHighlight}>{t("projName")}</Text>
           </Text>
           <Text style={styles.subtitle}>
-            seu aplicativo para localizar {"\n"}sua moto com agilidade
+            {t("yApp")} {"\n"}{t("yMt")}
           </Text>
         </View>
 
@@ -85,13 +81,13 @@ export default function Login() {
           <View style={styles.loginContainer}>
             <Text style={styles.loginLabel}>Login:</Text>
             <InputField
-              placeholder="Email"
+              placeholder={t("email")}
               value={email}
               onChangeText={setEmail}
               containerStyle={styles.glass}
             />
             <InputField
-              placeholder="Senha"
+              placeholder={t("password")}
               value={password}
               onChangeText={setPassword}
               secureTextEntry
@@ -100,14 +96,14 @@ export default function Login() {
           </View>
 
           <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>Entrar</Text>
+            <Text style={styles.buttonText}>{t("enter")}</Text>
           </TouchableOpacity>
 
           <Text
             style={styles.buttonText}
             onPress={() => navigation.navigate("Register")}
           >
-            Não tem cadastro? Cadastre-se
+            {t("dontHavCdas")}
           </Text>
         </View>
       </View>

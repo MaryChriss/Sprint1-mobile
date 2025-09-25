@@ -14,6 +14,7 @@ import { scale, verticalScale, moderateScale } from "react-native-size-matters";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { deleteUser, getUser, putUser } from "../services/rotes";
+import { useTranslation } from "react-i18next";
 
 type UserData = {
   idUser: number;
@@ -27,7 +28,8 @@ type UserData = {
 export default function Profile() {
   const { colors } = useTheme();
   const navigation = useNavigation<any>();
-
+  const { t } = useTranslation()
+  
   const [user, setUser] = useState<UserData | null>(null);
   const [nomeUser, setNomeUser] = useState("");
   const [email, setEmail] = useState("");
@@ -46,10 +48,10 @@ export default function Profile() {
 
         if (!idFromStorage) {
           setLoadingProfile(false);
-          Alert.alert("Erro", "Não foi possível identificar o usuário logado.");
+          Alert.alert("Erro", t("identUserErro"));
           return;
         }
-
+//{t("welcometo")}
         const apiUser = await getUser(idFromStorage);
         setUser(apiUser);
         setNomeUser(apiUser?.nomeUser ?? "");
@@ -59,7 +61,7 @@ export default function Profile() {
         setTheme(apiUser?.theme ?? "");
       } catch (e) {
         console.warn("Falha ao carregar usuário pela API:", e);
-        Alert.alert("Erro", "Não foi possível carregar seus dados.");
+        Alert.alert("Erro", t("errorDados"));
       } finally {
         setLoadingProfile(false);
       }
@@ -81,8 +83,8 @@ export default function Profile() {
 
       setEditing(false);
       Alert.alert(
-        "Perfil atualizado",
-        "Suas informações foram salvas com sucesso."
+        t("perfAtt"),
+        t("infosSave")
       );
     } catch (e: any) {
       console.error("Erro ao atualizar perfil:", e);
@@ -91,9 +93,9 @@ export default function Profile() {
         msg.includes("duplicate key value") ||
         msg.includes("usuario_email_key")
       ) {
-        setEmailError("Este e-mail já está em uso.");
+        setEmailError(t("emailInUse"));
       } else {
-        Alert.alert("Erro", "Não foi possível salvar suas informações.");
+        Alert.alert("Erro", t("erroSaveInfos"));
       }
     }
   }
@@ -101,12 +103,12 @@ export default function Profile() {
   function confirmDelete() {
     if (!user) return;
     Alert.alert(
-      "Excluir conta",
-      "Tem certeza que deseja excluir sua conta? Essa ação não pode ser desfeita.",
+      t("deleteCount"),
+      t("confirmDelete"),
       [
-        { text: "Cancelar", style: "cancel" },
+        { text: t("cancel"), style: "cancel" },
         {
-          text: "Excluir",
+          text: t("excluir"),
           style: "destructive",
           onPress: () => handleDeleteUser(user.idUser),
         },
@@ -118,11 +120,14 @@ export default function Profile() {
     try {
       await deleteUser(id);
       await AsyncStorage.multiRemove(["token", "userData"]);
-      Alert.alert("Usuário excluído", "O usuário foi excluído com sucesso.");
+      Alert.alert(
+  t("userExc"),
+  t("sucessdeleteuser")
+);
       navigation.navigate("Login" as never);
     } catch (e) {
-      console.error("Erro ao excluir usuário:", e);
-      Alert.alert("Erro", "Não foi possível excluir o usuário.");
+      console.error(t("errExcUser"), e);
+      Alert.alert("Erro", t("NFoiPossivel"));
     }
   }
 
@@ -141,10 +146,10 @@ export default function Profile() {
   };
 
   function handleLogout() {
-    Alert.alert("Sair", "Você tem certeza que deseja sair?", [
-      { text: "Cancelar", style: "cancel" },
+    Alert.alert(t("exit"), t("crtzExit"), [
+      { text:t("cancel"), style: "cancel" },
       {
-        text: "Sair",
+        text: t("exit"),
         style: "destructive",
         onPress: async () => {
           await AsyncStorage.multiRemove(["token", "userData"]);
@@ -158,7 +163,7 @@ export default function Profile() {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView contentContainerStyle={[styles.container]}>
         <View style={styles.headerRow}>
-          <Text style={[styles.title, { color: colors.text }]}>Meu Perfil</Text>
+          <Text style={[styles.title, { color: colors.text }]}>{t("myProfile")} </Text>
           {editing ? (
             <TouchableOpacity
               onPress={handleSave}
@@ -173,7 +178,7 @@ export default function Profile() {
             >
               <Icon name="content-save" size={scale(18)} color={colors.text} />
               <Text style={[styles.headerBtnText, { color: colors.text }]}>
-                Salvar
+                {t("save")}
               </Text>
             </TouchableOpacity>
           ) : (
@@ -190,7 +195,7 @@ export default function Profile() {
             >
               <Icon name="pencil" size={scale(18)} color={colors.text} />
               <Text style={[styles.headerBtnText, { color: colors.text }]}>
-                Editar
+                {t("edit")}
               </Text>
             </TouchableOpacity>
           )}
@@ -218,7 +223,7 @@ export default function Profile() {
 
           <View style={styles.field}>
             <Text style={[styles.label, { color: colors.text, opacity: 0.7 }]}>
-              Nome
+              {t("name")}
             </Text>
             {editing ? (
               <TextInput
@@ -262,7 +267,7 @@ export default function Profile() {
                       borderColor: emailError ? "red" : colors.border,
                     },
                   ]}
-                  placeholder="seu@email.com"
+                  placeholder="abcd@email.com"
                   placeholderTextColor={colors.text + "99"}
                   keyboardType="email-address"
                   autoCapitalize="none"
@@ -282,7 +287,7 @@ export default function Profile() {
 
           <View style={styles.field}>
             <Text style={[styles.label, { color: colors.text, opacity: 0.7 }]}>
-              Telefone
+              {t("cellphone")}
             </Text>
             {editing ? (
               <TextInput
@@ -320,7 +325,7 @@ export default function Profile() {
           >
             <Icon name="cog-outline" size={scale(18)} color={colors.text} />
             <Text style={[styles.actionText, { color: colors.text }]}>
-              Configurações
+              {t("config")}
             </Text>
             <View style={styles.actionRight}>
               <Icon name="chevron-right" size={scale(20)} color={colors.text} />
@@ -333,7 +338,7 @@ export default function Profile() {
           >
             <Icon name="delete-outline" size={scale(18)} color={colors.text} />
             <Text style={[styles.actionText, { color: colors.text }]}>
-              Excluir conta
+              {t("deleteAccount")}
             </Text>
           </TouchableOpacity>
 
@@ -349,7 +354,7 @@ export default function Profile() {
             onPress={handleLogout}
           >
             <Icon name="logout" size={scale(18)} color="#fff" />
-            <Text style={[styles.actionText, { color: "#fff" }]}>Sair</Text>
+            <Text style={[styles.actionText, { color: "#fff" }]}>{t("exit")}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
