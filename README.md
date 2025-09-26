@@ -83,8 +83,8 @@ Assim que a página carregar e o navegador solicitar login, a API já estará pr
 
 ## 👥 Integrantes
 
-* Mariana Christina — **RM: 554773** — [GitHub](https://github.com/gabrielamoguinho)
-* Gabriela Moguinho Gonçalves — **RM: 556143** — [GitHub](https://github.com/MaryChriss)
+* Mariana Christina — **RM: 554773** — [GitHub](https://github.com/MaryChriss)
+* Gabriela Moguinho Gonçalves — **RM: 556143** — [GitHub](https://github.com/gabrielamoguinho)
 * Henrique Maciel — **RM: 556480** — [GitHub](https://github.com/Maciel0123)
 
 ```
