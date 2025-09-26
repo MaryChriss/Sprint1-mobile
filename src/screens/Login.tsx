@@ -18,8 +18,8 @@ export default function Login() {
   const navigation = useNavigation<any>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { t } = useTranslation()
-  
+  const { t } = useTranslation();
+
   useEffect(() => {
     const loadSavedData = async () => {
       const data = await AsyncStorage.getItem("userData");
@@ -69,11 +69,13 @@ export default function Login() {
       <View style={styles.container}>
         <View style={styles.containerPhases}>
           <Text style={styles.title}>
-             {t("welcometo")}{"\n"}
+            {t("welcometo")}
+            {"\n"}
             <Text style={styles.titleHighlight}>{t("projName")}</Text>
           </Text>
           <Text style={styles.subtitle}>
-            {t("yApp")} {"\n"}{t("yMt")}
+            {t("yApp")} {"\n"}
+            {t("yMt")}
           </Text>
         </View>
 

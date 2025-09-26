@@ -11,6 +11,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { showMessage } from "react-native-flash-message";
 import InputField from "../components/InputField";
@@ -19,6 +20,7 @@ import { cadastro } from "../services/rotes";
 
 export default function Register() {
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
 
   const [step, setStep] = useState<0 | 1>(0);
   const [loading, setLoading] = useState(false);
@@ -57,27 +59,23 @@ export default function Register() {
     let msg = "";
 
     if (field === "name") {
-      if (!value?.trim()) msg = "Informe seu nome.";
-      else if (!validateName(value))
-        msg = "Nome deve começar com maiúscula e conter apenas letras.";
+      if (!value?.trim()) msg = t("infName");
+      else if (!validateName(value)) msg = t("nomeM");
     }
 
     if (field === "phone") {
-      if (!value?.trim()) msg = "Informe seu telefone.";
-      else if (!validatePhone(value))
-        msg = "Telefone inválido. Ex: (11) 99999-0000";
+      if (!value?.trim()) msg = t("infTel");
+      else if (!validatePhone(value)) msg = t("invalidCellphone");
     }
 
     if (field === "email") {
-      if (!value?.trim()) msg = "Informe seu e-mail.";
-      else if (!validateEmail(value)) msg = "E-mail inválido.";
+      if (!value?.trim()) msg = t("infEmail");
+      else if (!validateEmail(value)) msg = t("invalidEmail");
     }
 
     if (field === "password") {
-      if (!value?.trim()) msg = "Informe sua senha.";
-      else if (!validatePassword(value))
-        msg =
-          "Senha deve ter 8+ caracteres, com maiúscula, minúscula e número/símbolo.";
+      if (!value?.trim()) msg = t("InfSenha");
+      else if (!validatePassword(value)) msg = t("senhavalid");
     }
 
     setErrors((prev) => ({ ...prev, [field]: msg }));
@@ -102,7 +100,7 @@ export default function Register() {
 
       const phoneNumber = Number(phone.replace(/\D/g, ""));
       if (!Number.isFinite(phoneNumber)) {
-        setErrors((prev) => ({ ...prev, phone: "Telefone inválido." }));
+        setErrors((prev) => ({ ...prev, phone: t("telefInvalid") }));
         setLoading(false);
         return;
       }
@@ -133,10 +131,31 @@ export default function Register() {
       setErrors({});
       navigation.navigate("Login");
     } catch (error: any) {
+      const res = error?.response;
+      const status: number | undefined = res?.status ?? error?.status;
+
+      const data = res?.data ?? error?.data;
+      const dataText =
+        typeof data === "string" ? data : data ? JSON.stringify(data) : "";
+      const msgText = `${error?.message ?? ""} ${dataText}`;
+
+      const isDupEmail =
+        status === 409 ||
+        /duplicate key|23505|unique constraint|uc_usuario_email|email.*already exists/i.test(
+          msgText
+        );
+
+      if (isDupEmail) {
+        setErrors((prev) => ({ ...prev, email: t("emailInUse") }));
+        return;
+      }
+
       const serverMsg =
-        error?.response?.data?.message ||
-        error?.response?.data?.error ||
-        "Ocorreu um erro ao realizar o cadastro.";
+        (typeof data === "object" && (data?.message || data?.error)) ||
+        (typeof data === "string" && data) ||
+        error?.message ||
+        t("erroCadas");
+
       showMessage({ message: "Erro", description: serverMsg, type: "danger" });
     } finally {
       setLoading(false);
@@ -175,7 +194,7 @@ export default function Register() {
           <Text
             style={[styles.stepLabel, current === 0 && styles.stepLabelActive]}
           >
-            Dados pessoais
+            {t("dadospessoais")}
           </Text>
         </View>
 
@@ -190,7 +209,7 @@ export default function Register() {
           <Text
             style={[styles.stepLabel, current === 1 && styles.stepLabelActive]}
           >
-            Acesso
+            {t("acesso")}
           </Text>
         </View>
       </View>
@@ -213,11 +232,12 @@ export default function Register() {
         >
           <View style={styles.hero}>
             <Text style={styles.title}>
-              Bem-vindo ao{"\n"}
-              <Text style={styles.titleHighlight}>Future Stack</Text>
+              {t("welcometo")}
+              {"\n"}
+              <Text style={styles.titleHighlight}> {t("projName")}</Text>
             </Text>
             <Text style={styles.subtitle}>
-              seu aplicativo para localizar {"\n"}sua moto com agilidade
+              {t("yApp")} {"\n"} {t("yMt")}
             </Text>
           </View>
 
@@ -227,7 +247,7 @@ export default function Register() {
             {step === 0 ? (
               <View style={styles.formArea}>
                 <InputField
-                  placeholder="Nome"
+                  placeholder={t("name")}
                   value={name}
                   onChangeText={(v) => {
                     setName(v);
@@ -241,7 +261,7 @@ export default function Register() {
                 )}
 
                 <InputField
-                  placeholder="Telefone"
+                  placeholder={t("cellphone")}
                   value={phone}
                   onChangeText={(v) => {
                     setPhone(v);
@@ -262,14 +282,14 @@ export default function Register() {
                   {loading ? (
                     <ActivityIndicator color="#fff" />
                   ) : (
-                    <Text style={styles.primaryText}>Continuar</Text>
+                    <Text style={styles.primaryText}>{t("continuar")}</Text>
                   )}
                 </TouchableOpacity>
               </View>
             ) : (
               <View style={styles.formArea}>
                 <InputField
-                  placeholder="Email"
+                  placeholder={t("email")}
                   value={email}
                   onChangeText={(v) => {
                     setEmail(v);
@@ -283,7 +303,7 @@ export default function Register() {
                   <Text style={styles.errorText}>{errors.email}</Text>
                 )}
                 <InputField
-                  placeholder="Senha"
+                  placeholder={t("password")}
                   value={password}
                   onChangeText={(v) => {
                     setPassword(v);
@@ -302,7 +322,7 @@ export default function Register() {
                     onPress={() => setStep(0)}
                     disabled={loading}
                   >
-                    <Text style={styles.secondaryText}>Voltar</Text>
+                    <Text style={styles.secondaryText}>{t("back")}</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -313,7 +333,7 @@ export default function Register() {
                     {loading ? (
                       <ActivityIndicator color="#fff" />
                     ) : (
-                      <Text style={styles.primaryText}>Cadastre-se</Text>
+                      <Text style={styles.primaryText}>{t("cadastrase")}</Text>
                     )}
                   </TouchableOpacity>
                 </View>
@@ -322,7 +342,7 @@ export default function Register() {
           </View>
 
           <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={styles.link}>Já tem cadastro? Faça login</Text>
+            <Text style={styles.link}>{t("temCadastro")}</Text>
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>

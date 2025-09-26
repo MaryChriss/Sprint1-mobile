@@ -28,8 +28,8 @@ type UserData = {
 export default function Profile() {
   const { colors } = useTheme();
   const navigation = useNavigation<any>();
-  const { t } = useTranslation()
-  
+  const { t } = useTranslation();
+
   const [user, setUser] = useState<UserData | null>(null);
   const [nomeUser, setNomeUser] = useState("");
   const [email, setEmail] = useState("");
@@ -51,7 +51,6 @@ export default function Profile() {
           Alert.alert("Erro", t("identUserErro"));
           return;
         }
-//{t("welcometo")}
         const apiUser = await getUser(idFromStorage);
         setUser(apiUser);
         setNomeUser(apiUser?.nomeUser ?? "");
@@ -82,10 +81,7 @@ export default function Profile() {
       setPhone(apiUser?.phone ?? "");
 
       setEditing(false);
-      Alert.alert(
-        t("perfAtt"),
-        t("infosSave")
-      );
+      Alert.alert(t("perfAtt"), t("infosSave"));
     } catch (e: any) {
       console.error("Erro ao atualizar perfil:", e);
       const msg = e?.response?.data || e?.message || "";
@@ -102,28 +98,21 @@ export default function Profile() {
 
   function confirmDelete() {
     if (!user) return;
-    Alert.alert(
-      t("deleteCount"),
-      t("confirmDelete"),
-      [
-        { text: t("cancel"), style: "cancel" },
-        {
-          text: t("excluir"),
-          style: "destructive",
-          onPress: () => handleDeleteUser(user.idUser),
-        },
-      ]
-    );
+    Alert.alert(t("deleteCount"), t("confirmDelete"), [
+      { text: t("cancel"), style: "cancel" },
+      {
+        text: t("excluir"),
+        style: "destructive",
+        onPress: () => handleDeleteUser(user.idUser),
+      },
+    ]);
   }
 
   async function handleDeleteUser(id: number) {
     try {
       await deleteUser(id);
       await AsyncStorage.multiRemove(["token", "userData"]);
-      Alert.alert(
-  t("userExc"),
-  t("sucessdeleteuser")
-);
+      Alert.alert(t("userExc"), t("sucessdeleteuser"));
       navigation.navigate("Login" as never);
     } catch (e) {
       console.error(t("errExcUser"), e);
@@ -147,7 +136,7 @@ export default function Profile() {
 
   function handleLogout() {
     Alert.alert(t("exit"), t("crtzExit"), [
-      { text:t("cancel"), style: "cancel" },
+      { text: t("cancel"), style: "cancel" },
       {
         text: t("exit"),
         style: "destructive",
@@ -163,7 +152,9 @@ export default function Profile() {
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView contentContainerStyle={[styles.container]}>
         <View style={styles.headerRow}>
-          <Text style={[styles.title, { color: colors.text }]}>{t("myProfile")} </Text>
+          <Text style={[styles.title, { color: colors.text }]}>
+            {t("myProfile")}
+          </Text>
           {editing ? (
             <TouchableOpacity
               onPress={handleSave}
@@ -354,7 +345,9 @@ export default function Profile() {
             onPress={handleLogout}
           >
             <Icon name="logout" size={scale(18)} color="#fff" />
-            <Text style={[styles.actionText, { color: "#fff" }]}>{t("exit")}</Text>
+            <Text style={[styles.actionText, { color: "#fff" }]}>
+              {t("exit")}
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

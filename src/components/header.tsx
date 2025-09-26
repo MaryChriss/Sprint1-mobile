@@ -2,10 +2,12 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTranslation } from "react-i18next";
 
 export default function Header() {
   const navigation = useNavigation<any>();
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View
@@ -22,7 +24,9 @@ export default function Header() {
           style={{ width: 27, height: 27 }}
           source={require("../../assets/logo.png")}
         />
-        <Text style={[styles.title, { color: colors.text }]}>Future Stack</Text>
+        <Text style={[styles.title, { color: colors.text }]}>
+          {t("projName")}
+        </Text>
       </View>
 
       <TouchableOpacity

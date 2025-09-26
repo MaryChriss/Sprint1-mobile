@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { useTranslation } from "react-i18next";
 import Header from "../components/header";
 import { AppContext } from "../../App";
 import { APP_COLORS } from "../colors/colors";
@@ -13,6 +13,7 @@ const Themes = () => {
   const navigation = useNavigation<any>();
   const { value, setValue } = useContext(AppContext);
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   const [theme, setTheme] = useState<number>(Number(value) || 0);
   const [category, setCategory] = useState<string>("");
@@ -47,7 +48,9 @@ const Themes = () => {
 
         <View style={styles.content}>
           <View style={styles.titleRow}>
-            <Text style={[styles.title, { color: colors.text }]}>Ajustes</Text>
+            <Text style={[styles.title, { color: colors.text }]}>
+              {t("ajustes")}
+            </Text>
             <TouchableOpacity
               style={[
                 styles.btnGhost,
@@ -65,7 +68,7 @@ const Themes = () => {
               }
             >
               <Text style={[styles.btnGhostTxt, { color: colors.text }]}>
-                Voltar ao Perfil
+                {t("backtoProfile")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -82,7 +85,7 @@ const Themes = () => {
           >
             <View style={styles.cardHeader}>
               <Text style={[styles.cardTitle, { color: colors.text }]}>
-                Tema
+                {t("tema")}
               </Text>
               <View
                 style={[
@@ -98,7 +101,7 @@ const Themes = () => {
             <Text
               style={[styles.sectionHelp, { color: colors.text, opacity: 0.7 }]}
             >
-              Escolha entre tema claro ou escuro.
+              {t("darkouwhite")}
             </Text>
 
             <SegmentedControl

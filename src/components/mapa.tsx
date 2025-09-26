@@ -8,6 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "@react-navigation/native";
 import { scale, verticalScale, moderateScale } from "react-native-size-matters";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -31,6 +32,7 @@ export default function MapaVagas({ patioId, onError }: Props) {
 
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (patioId === null) return;
@@ -43,17 +45,17 @@ export default function MapaVagas({ patioId, onError }: Props) {
         const response = await infospatios(patioId);
         const status = response.status;
         if (status === 500) {
-          onError?.("Pátio não configurado.");
+          onError?.(t("pationConfig"));
           return;
         }
         if (alive) setOcupacao(response);
       } catch (error) {
         const statusendpoint = (error as any)?.response?.status;
         if (statusendpoint === 500) {
-          onError?.("Pátio não configurado.");
+          onError?.(t("pationConfig"));
           return;
         }
-        onError?.("Erro ao carregar ocupação do pátio.");
+        onError?.(t("erroOcupaPatio"));
         console.error("Erro ao buscar ocupação:", error);
       } finally {
         setLoading(false);
@@ -71,7 +73,7 @@ export default function MapaVagas({ patioId, onError }: Props) {
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color={colors.primary} />
         <Text style={{ marginTop: 8, color: colors.text }}>
-          Carregando mapa...
+          {t("loadingMap")}
         </Text>
       </View>
     );
@@ -100,11 +102,15 @@ export default function MapaVagas({ patioId, onError }: Props) {
     <View style={styles.legend}>
       <View style={styles.legendItem}>
         <View style={[styles.legendDot, { backgroundColor: colors.primary }]} />
-        <Text style={[styles.legendText, { color: colors.text }]}>Ocupada</Text>
+        <Text style={[styles.legendText, { color: colors.text }]}>
+          {t("ocupado")}
+        </Text>
       </View>
       <View style={styles.legendItem}>
         <View style={[styles.legendDot, { backgroundColor: colors.border }]} />
-        <Text style={[styles.legendText, { color: colors.text }]}>Livre</Text>
+        <Text style={[styles.legendText, { color: colors.text }]}>
+          {t("livre")}
+        </Text>
       </View>
     </View>
   );
@@ -215,10 +221,14 @@ export default function MapaVagas({ patioId, onError }: Props) {
         { backgroundColor: colors.card, borderColor: colors.border },
       ]}
     >
-      <Text style={[styles.cardTitle, { color: colors.text }]}>Resumo</Text>
+      <Text style={[styles.cardTitle, { color: colors.text }]}>
+        {t("resumo")}
+      </Text>
       <Divider style={[styles.divider, { backgroundColor: colors.border }]} />
       <View style={styles.rowBetween}>
-        <Text style={[styles.cardText, { color: colors.text }]}>Pátio</Text>
+        <Text style={[styles.cardText, { color: colors.text }]}>
+          {t("patio")}
+        </Text>
         <Text style={[styles.cardTextBold, { color: colors.text }]}>
           {patioOcupadas}/{totalVagasPatio} (
           {percent(patioOcupadas, totalVagasPatio)}%)
@@ -226,7 +236,7 @@ export default function MapaVagas({ patioId, onError }: Props) {
       </View>
       <View style={styles.rowBetween}>
         <Text style={[styles.cardText, { color: colors.text }]}>
-          Manutenção
+          {t("manut")}
         </Text>
         <Text style={[styles.cardTextBold, { color: colors.text }]}>
           {manutOcupadas}/{totalVagasManutencao} (
@@ -243,7 +253,7 @@ export default function MapaVagas({ patioId, onError }: Props) {
         <Text
           style={[styles.cardTextMuted, { color: colors.text, opacity: 0.6 }]}
         >
-          Total motos
+          {t("totalmotos")}
         </Text>
         <Text style={[styles.cardTextBold, { color: colors.text }]}>
           {totalMotos}
@@ -286,7 +296,7 @@ export default function MapaVagas({ patioId, onError }: Props) {
 
         <View style={styles.section}>
           <HeaderBar
-            title="Zona A — Pátio"
+            title={t("patioA")}
             ocupadas={motosPatio}
             total={totalVagasPatio}
           />
@@ -296,7 +306,7 @@ export default function MapaVagas({ patioId, onError }: Props) {
 
         <View style={styles.section}>
           <HeaderBar
-            title="Zona B — Manutenção"
+            title={t("patioB")}
             ocupadas={motosManutencao}
             total={totalVagasManutencao}
           />
@@ -319,7 +329,7 @@ export default function MapaVagas({ patioId, onError }: Props) {
               style={[styles.modalHeader, { borderBottomColor: colors.border }]}
             >
               <Text style={[styles.modalTitle, { color: colors.text }]}>
-                Mapa Completo
+                {t("mapcomplete")}
               </Text>
               <TouchableOpacity
                 style={[
@@ -341,7 +351,7 @@ export default function MapaVagas({ patioId, onError }: Props) {
             <ScrollView contentContainerStyle={[styles.modalScroll]}>
               <View style={styles.section}>
                 <HeaderBar
-                  title="Zona A — Pátio"
+                  title={t("patioA")}
                   ocupadas={motosPatio}
                   total={totalVagasPatio}
                 />
@@ -351,7 +361,7 @@ export default function MapaVagas({ patioId, onError }: Props) {
 
               <View style={styles.section}>
                 <HeaderBar
-                  title="Zona B — Manutenção"
+                  title={t("patioB")}
                   ocupadas={motosManutencao}
                   total={totalVagasManutencao}
                 />

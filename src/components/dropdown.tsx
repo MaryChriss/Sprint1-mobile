@@ -4,6 +4,8 @@ import Entypo from "@expo/vector-icons/Entypo";
 import React, { useCallback, useEffect, useState } from "react";
 import { useFocusEffect, useTheme } from "@react-navigation/native";
 import { listPatios } from "../services/rotes";
+import { useTranslation } from "react-i18next";
+
 type Patio = { id: number; nome: string };
 
 export default function Dropdown({
@@ -11,9 +13,10 @@ export default function Dropdown({
 }: {
   onSelect?: (id: number) => void;
 }) {
+  const { t } = useTranslation();
   const { colors, dark } = useTheme();
   const [expanded, setExpanded] = useState(false);
-  const [selectedItem, setSelectedItem] = useState("Selecione uma filial");
+  const [selectedItem, setSelectedItem] = useState(t("selectFilial"));
   const [patios, setPatios] = useState<Patio[]>([]);
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
@@ -25,7 +28,7 @@ export default function Dropdown({
       const data = await listPatios();
       setPatios(Array.isArray(data) ? data : []);
     } catch {
-      setErro("Não foi possível carregar as filiais.");
+      setErro(t("erroCarrFiliais"));
     } finally {
       setLoading(false);
     }
@@ -50,7 +53,7 @@ export default function Dropdown({
   return (
     <View style={styles.wrapper}>
       <Text style={[styles.filialTitle, { color: colors.text }]}>
-        Filial selecionada:
+        {t("filialSelect")}
       </Text>
 
       <View

@@ -39,7 +39,7 @@ type FieldErrors = {
 
 export default function PatioManagement() {
   const { colors, dark } = useTheme();
-  const { t } = useTranslation()
+  const { t } = useTranslation();
 
   const [patios, setPatios] = useState<Patio[]>([]);
   const [loadingList, setLoadingList] = useState(false);
@@ -85,14 +85,12 @@ export default function PatioManagement() {
     const b = Number(metragemZonaB);
     const next: FieldErrors = {};
 
-    if (!nome.trim()) next.nome = "Informe o nome da filial.";
+    if (!nome.trim()) next.nome = t("infNameFilial");
     if (!Number.isInteger(quantidadeVagas) || quantidadeVagas < 60) {
-      next.quantidadeVagas = "Quantidade de vagas mínima é 60.";
+      next.quantidadeVagas = t("avisqntVagas");
     }
-    if (!Number.isFinite(a) || a <= 0)
-      next.metragemZonaA = "Metragem A inválida";
-    if (!Number.isFinite(b) || b <= 0)
-      next.metragemZonaB = "Metragem B inválida";
+    if (!Number.isFinite(a) || a <= 0) next.metragemZonaA = t("metAInvalida");
+    if (!Number.isFinite(b) || b <= 0) next.metragemZonaB = t("metBInvalida");
 
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -104,7 +102,7 @@ export default function PatioManagement() {
       const data = await listPatios();
       setPatios(Array.isArray(data) ? data : []);
     } catch {
-      setErrors({ form: "Não foi possível carregar os pátios." });
+      setErrors({ form: t("erroCarrPatio") });
     } finally {
       setLoadingList(false);
     }
@@ -146,10 +144,10 @@ export default function PatioManagement() {
       setLoadingSave(true);
       if (isEditing) {
         await putPatio(editingId!, payload);
-        setSuccessMsg("Pátio atualizado com sucesso!");
+        setSuccessMsg(t("patioAtt"));
       } else {
         await postPatio(payload);
-        setSuccessMsg("Pátio cadastrado com sucesso!");
+        setSuccessMsg(t("patioCadas"));
       }
       await goToList();
       resetForm();
@@ -157,7 +155,7 @@ export default function PatioManagement() {
       const serverMsg =
         error?.response?.data?.message ||
         error?.response?.data?.error ||
-        "Erro ao salvar o pátio.";
+        t("errSavePatio");
 
       const details: Array<{ field?: string; message?: string }> =
         error?.response?.data?.errors;
@@ -182,18 +180,14 @@ export default function PatioManagement() {
   };
 
   const confirmDelete = (p: Patio) => {
-    Alert.alert(
-      "Excluir pátio",
-      `Tem certeza que deseja excluir "${p.nome}"?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Excluir",
-          style: "destructive",
-          onPress: () => handleDelete(p.id),
-        },
-      ]
-    );
+    Alert.alert(t("deletePatio"), t("crtzDelete", { nome: p.nome }), [
+      { text: t("cancel"), style: "cancel" },
+      {
+        text: t("excluir"),
+        style: "destructive",
+        onPress: () => handleDelete(p.id),
+      },
+    ]);
   };
 
   const handleDelete = async (id: number) => {
@@ -203,12 +197,12 @@ export default function PatioManagement() {
       await deletePatio(id);
       if (editingId === id) resetForm();
       await loadPatios();
-      setSuccessMsg("Pátio excluído com sucesso!");
+      setSuccessMsg(t("sucessdeletePatio"));
     } catch (e: any) {
       const msg =
         e?.response?.data?.message ||
         e?.response?.data?.error ||
-        "Erro ao excluir o pátio.";
+        t("erroDeletePatio");
       setErrors({ form: msg });
     }
   };
@@ -223,7 +217,7 @@ export default function PatioManagement() {
 
         <View style={styles.content}>
           <Text style={[styles.titlePrinc, { color: colors.text }]}>
-             {t("gerencPatios")}
+            {t("gerencPatios")}
           </Text>
 
           {successMsg && (
@@ -310,7 +304,7 @@ export default function PatioManagement() {
                 </Text>
               ) : patios.length === 0 ? (
                 <Text style={{ color: colors.text, opacity: 0.7 }}>
-                 {t("anyPat")}
+                  {t("anyPat")}
                 </Text>
               ) : (
                 <FlatList

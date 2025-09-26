@@ -5,6 +5,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 import { scale, verticalScale, moderateScale } from "react-native-size-matters";
 import { useEffect, useMemo, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
@@ -37,6 +38,7 @@ export default function Search() {
   const { colors } = useTheme();
   const route = useRoute();
   const { patioId } = route.params as { patioId: string | null };
+  const { t } = useTranslation();
 
   const [zonaSelecionada, setZonaSelecionada] = useState<TipoZona | "">("");
   const [placa, setPlaca] = useState("");
@@ -48,8 +50,8 @@ export default function Search() {
 
   const zonasOpcoes = useMemo(
     () => [
-      { label: "Zona A", value: "A" },
-      { label: "Zona B", value: "B" },
+      { label: t("zonaA"), value: "A" },
+      { label: t("zonaB"), value: "B" },
     ],
     []
   );
@@ -73,7 +75,7 @@ export default function Search() {
         setLista(page.content ?? []);
       } catch (e: any) {
         if (!alive) return;
-        setErro(e?.response?.data?.message || "Erro ao buscar motos.");
+        setErro(e?.response?.data?.message || t("erroBusMoto"));
       } finally {
         if (alive) setLoading(false);
       }
@@ -97,7 +99,7 @@ export default function Search() {
         ]}
       >
         <Text style={{ fontSize: 16, fontWeight: "600", color: colors.text }}>
-          Nenhum pátio selecionado. Volte e selecione um pátio.
+          {t("anyPatio")}
         </Text>
       </View>
     );
@@ -106,11 +108,13 @@ export default function Search() {
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Text style={[styles.titlePrinc, { color: colors.text }]}>
-        Buscar motos
+        {t("buscMoto")}
       </Text>
 
       <View style={styles.linha}>
-        <Text style={[styles.placaLabel, { color: colors.text }]}>Placa:</Text>
+        <Text style={[styles.placaLabel, { color: colors.text }]}>
+          {t("placa")}
+        </Text>
         <View style={styles.inputWrapper}>
           <InputField
             value={placa}
@@ -123,7 +127,9 @@ export default function Search() {
 
       <View style={styles.zonasContainer}>
         <View style={styles.zonaLinha}>
-          <Text style={[styles.zonaLabel, { color: colors.text }]}>Local:</Text>
+          <Text style={[styles.zonaLabel, { color: colors.text }]}>
+            {t("local")}
+          </Text>
 
           <Dropdown
             style={[
@@ -157,7 +163,9 @@ export default function Search() {
       {loading ? (
         <View style={{ marginTop: 20, alignItems: "center" }}>
           <ActivityIndicator color={colors.primary} />
-          <Text style={{ marginTop: 8, color: colors.text }}>Buscando...</Text>
+          <Text style={{ marginTop: 8, color: colors.text }}>
+            {t("buscando")}
+          </Text>
         </View>
       ) : erro ? (
         <View style={{ marginTop: 20, alignItems: "center" }}>
@@ -169,14 +177,14 @@ export default function Search() {
             <Text
               style={{ textAlign: "center", color: colors.text, opacity: 0.6 }}
             >
-              Nenhum resultado para os filtros atuais.
+              {t("anyResult")}
             </Text>
           ) : (
             lista.map((m) => (
               <CardVeiculo
                 key={m.id}
                 placa={m.placa}
-                local={m.tipoZona ? `Zona ${m.tipoZona}` : "Sem zona"}
+                local={m.tipoZona ? `${t("zona")}${m.tipoZona}` : t("anyzona")}
               />
             ))
           )}
@@ -195,7 +203,7 @@ const styles = StyleSheet.create({
     marginTop: verticalScale(20),
     marginBottom: verticalScale(-20),
   },
-    glass: {
+  glass: {
     backgroundColor: "rgba(219, 219, 219, 0.35)",
     borderRadius: 12,
     borderWidth: StyleSheet.hairlineWidth,

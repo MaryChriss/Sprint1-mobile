@@ -12,7 +12,7 @@ export default function Home() {
   const { colors } = useTheme();
   const [patioId, setPatioId] = React.useState<number | null>(null);
   const [apiError, setApiError] = React.useState<string | null>(null);
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const handleSelectPatio = (id: number) => {
     setApiError(null);
     setPatioId(id);
@@ -26,7 +26,7 @@ export default function Home() {
 
       <View style={{ margin: 10 }}>
         <Text style={[styles.filialTitle, { color: colors.text }]}>
-           {t("mapVagas")}
+          {t("mapVagas")}
         </Text>
 
         {patioId == null ? (

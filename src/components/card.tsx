@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 interface CardVeiculoProps {
   placa: string;
@@ -9,6 +10,8 @@ interface CardVeiculoProps {
 
 export default function CardVeiculo({ placa, local }: CardVeiculoProps) {
   const { colors } = useTheme();
+  const { t } = useTranslation();
+
   return (
     <View
       style={[
@@ -27,10 +30,10 @@ export default function CardVeiculo({ placa, local }: CardVeiculoProps) {
       />
       <View>
         <Text style={[styles.cardText, { color: colors.text }]}>
-          Placa: {placa}
+          {t("placa")} {placa}
         </Text>
         <Text style={[styles.cardText, { color: colors.text }]}>
-          Local: {local}
+          {t("local")} {local}
         </Text>
       </View>
     </View>
