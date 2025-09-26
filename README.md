@@ -1,61 +1,90 @@
-# futureStack 
+# 🚲 Mottu Mobile App
 
-Sistema inteligente de rastreamento de motos via Wi-Fi, com mapeamento digital em tempo real e adaptável a diferentes filiais.
+Aplicação mobile desenvolvida em **React Native** para gerenciamento de pátios, motos e zonas da Mottu, com integração completa à API (Java).  
+O objetivo é oferecer uma solução prática para controle de cadastro de usuários, autenticação, ocupação de pátios e busca de motos.
+
+---
 
 ## 📋 Descrição da Solução
 
-O **futureStack** é uma solução de monitoramento de motos que utiliza gateways Wi-Fi posicionados estrategicamente para detectar automaticamente a presença de veículos em duas zonas principais: **Zona A (Pátio)** e **Zona B (Manutenção)**.
+O **Mottu Mobile App** é uma aplicação que possibilita o **gerenciamento digital de pátios** e motos, oferecendo funcionalidades como:
 
-Cada moto emite sinal que é captado pelo **gateway instalado em cada zona**. Com base na intensidade do sinal (`RSSI`), o sistema identifica a localização aproximada da moto e atualiza sua posição em um **mapa digital interativo**. Além disso, são apresentados dados como **metragem total de cada zona**, **ocupação atual** e uma **visualização detalhada em tempo real**.
+- **Login, cadastro e logout** de usuários com persistência de sessão.
+- **Gestão de pátios** (Create, Read, Update, Delete), com validações de formulário e mensagens de feedback.
+- **Visualização de ocupação em mapa interativo**, exibindo zonas, metragem total e ocupação em tempo real.
+- **Busca por motos** (placa ou tipo de zona), com listagem em cartões.
+- **Tema claro e escuro**, personalizável e persistente.
+- **Internacionalização (i18n)** com suporte a múltiplos idiomas.
 
-O sistema também permite **buscas por placa ou modelo**, e é totalmente **adaptável a diferentes filiais**, com cadastro personalizado da metragem de pátio e manutenção, além de gateways exclusivos por local.
+---
 
 ## 🚀 Tecnologias Utilizadas
 
-- **React Native** (com `react-native-vector-icons`)
-- **TypeScript**
-- **React Native Paper**
-- **JavaScript**
-- **Wi-Fi / IoT conceito de integração**
+- **React Native** + **TypeScript**
+- **React Navigation** (Stack + Tabs)
+- **React Native Paper** (Material Design)
+- **Axios** (requisições HTTP com interceptors e tokens JWT)
+- **AsyncStorage** (persistência local)
+- **i18next** + **expo-localization** (tradução e idiomas)
+- **React Query** (gestão de cache e chamadas de API)
+- **Expo** (execução e build do projeto)
 
-## 📦 Estrutura da Interface
+---
 
-- Visualização em tempo real das motos por zona (Pátio e Manutenção)
-- Ícones de moto ocupando as vagas
-- Modal com **mapa completo** e **resumo de ocupação**
-- Cadastro de **metragem das zonas**
-- Definição fixa de **1 gateway por zona**
-- Busca por placa
-  
+## 📦 Estrutura de Pastas
+
+```
+
+src/
+├─ components/       # Componentes reutilizáveis (Header, Input, Card, Mapa, etc.)
+├─ screens/          # Telas principais (Login, Register, Configuration, Search, Themes)
+├─ services/         # API, rotas, interceptors e navegação raiz
+├─ locales/          # Arquivos de tradução (i18n)
+├─ colors/           # Paleta de cores do app
+├─ i18n.ts           # Configuração de internacionalização
+└─ App.tsx           # Entrada principal do aplicativo
+
+````
+
+---
+
 ## 🛠️ Como Rodar o Projeto Localmente
 
 1. **Clone o repositório:**
+   
+  ```bash
+     git clone https://github.com/MaryChriss/Sprint1-mobile.git
+  ```
 
-```bash
-git clone https://github.com/seu-usuario/Sprint1-mobile.git
-cd Sprint1-mobile
-```
+2. **Baixe as dependências:**
 
-2. **Baixar dependecias**
-
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 3. **Execute o app em ambiente de desenvolvimento:**
 
-```bash
-npx expo start
-```
+   ```bash
+   npx expo start
+   ```
 
-## 📌 Observações
+---
 
-O número de vagas, zonas e distribuição podem ser ajustados no código conforme a configuração do pátio da filial (dados mockados).
+## 🌐 Integração com a API
 
-O módulo de localização real via Wi-Fi e gateways será integrado futuramente via API com o backend/IOT dos dispositivos.
+Para testar o app em conjunto com a **API em Java**, é necessário garantir que ela esteja rodando.
+Basta acessar o link:
+
+👉 [https://sprint1-java.onrender.com](https://sprint1-java.onrender.com)
+
+Assim que a página carregar e o navegador solicitar login, a API já estará pronta para uso no aplicativo.
+
+---
 
 ## 👥 Integrantes
 
-- Mariana Christina RM: 554773
-- Gabriela Moguinho RM: 556143
-- Henrique Maciel RM: 556480
+* Mariana Christina — **RM: 554773** — [GitHub](https://github.com/gabrielamoguinho)
+* Gabriela Moguinho Gonçalves — **RM: 556143** — [GitHub](https://github.com/MaryChriss)
+* Henrique Maciel — **RM: 556480** — [GitHub](https://github.com/Maciel0123)
+
+```
